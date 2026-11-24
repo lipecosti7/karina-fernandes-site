@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { useRef, useSyncExternalStore } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, MapPin } from 'lucide-react'
 import { motion, useScroll, useSpring, useTransform, type MotionValue } from 'motion/react'
 import CardDeckCarousel, { type Slide } from '../components/ui/card-deck-carousel'
 import { Btn, Deco, Icon, WaNote } from '../components/Ui'
@@ -40,18 +40,16 @@ function Hero() {
   const animated = useLand()
   const rise = (delay: number) => ({ initial: animated ? { opacity: 0, y: 14 } : false, animate: { opacity: 1, y: 0 }, transition: { duration: 0.9, ease, delay } } as const)
   return (
-    <section className="relative flex min-h-svh flex-col overflow-hidden bg-areia text-cafe land:min-h-[max(100svh,780px)] land:overflow-visible land:bg-papel land:pt-[84px]">
+    <section className="relative flex min-h-svh flex-col overflow-hidden bg-papel text-cafe land:min-h-[max(100svh,780px)] land:overflow-visible land:pt-[84px]">
       <h1 className="sr-only">{brand.name} — {brand.role}</h1>
       <svg aria-hidden width="0" height="0" className="absolute">
         <clipPath id="hero-forma" clipPathUnits="objectBoundingBox"><path d="M0.5 0C0.224 0 0 0.246 0 0.55V1H1V0Z" /></clipPath>
       </svg>
       <div className="relative flex flex-1 flex-col">
-        {/* Celular: conteúdo centralizado, foto abaixo. Paisagem/desktop: coluna esquerda */}
-        <div className="relative z-10 flex flex-col items-center px-5 pb-10 pt-[108px] text-center sm:px-8 land:absolute land:inset-y-0 land:left-0 land:w-[52%] land:items-start land:justify-center land:pb-0 land:pl-[clamp(2rem,8.2vw,8rem)] land:pr-6 land:pt-0 land:text-left">
+        <div className="relative z-10 flex flex-col items-center px-5 pt-[104px] text-center sm:px-8 land:absolute land:inset-y-0 land:left-0 land:w-[52%] land:items-start land:justify-center land:pl-[clamp(2rem,8.2vw,8rem)] land:pr-6 land:pt-0 land:text-left">
           <motion.div {...rise(0.1)}>
             <Img name="logo-ouro" sizes="(min-width: 1024px) 380px, 240px" alt={`${brand.name}, ${brand.role}`} loading="eager" className="h-auto w-[min(13rem,56vw)] sm:w-60 land:w-[min(22rem,27vw)]" />
           </motion.div>
-          {/* linha ornamental fina abaixo da logo */}
           <motion.div {...rise(0.4)} className="mt-5 flex items-center gap-3 text-dourado land:mt-6">
             <span className="h-px w-10 bg-dourado/60 land:w-16" />
             <Deco name="estrela-brilho" className="size-3.5 shrink-0" />
@@ -60,20 +58,22 @@ function Hero() {
           <motion.p {...rise(0.65)} className="mt-6 font-script text-[clamp(46px,12vw,64px)] leading-[1.05] text-ouro land:mt-7 land:text-[clamp(56px,6vw,96px)]">
             Realce o seu olhar.
           </motion.p>
-          <motion.div {...rise(1.0)} className="mt-9 land:mt-10">
+          <motion.div {...rise(1.0)} className="mt-8 land:mt-10">
             <a href={waUrl()} target="_blank" rel="noopener noreferrer"
               className="inline-flex min-h-[3.25rem] cursor-pointer items-center gap-2.5 rounded-full bg-ouro px-9 text-[15px] font-semibold tracking-wide text-white transition-colors duration-200 hover:bg-ouro-escuro">
               <Icon name="chat" className="size-5" />Agendar horário<WaNote />
             </a>
           </motion.div>
         </div>
-        {/* foto: retrato abaixo (celular, topo esmaecido) ou em arco na metade direita (desktop) */}
-        <div className="relative mt-auto land:absolute land:inset-y-0 land:left-auto land:right-0 land:mt-0 land:w-1/2 land:[clip-path:url(#hero-forma)]">
+        {/* celular: retrato em arco com moldura fina deslocada (sem gradiente); desktop: forma em arco na metade direita */}
+        <div className="relative mx-auto mb-14 mt-14 w-[min(76vw,330px)] land:absolute land:inset-y-0 land:left-auto land:right-0 land:m-0 land:w-1/2 land:[clip-path:url(#hero-forma)]">
+          <span aria-hidden className="pointer-events-none absolute -inset-x-3 -bottom-3 -top-3 translate-x-3 translate-y-3 text-dourado land:hidden">
+            <Deco name="moldura-arco" fit className="size-full" />
+          </span>
           <motion.div {...(animated ? { initial: { scale: 1.06 }, animate: { scale: 1 }, transition: { duration: 2, ease } } : {})}
-            className="size-full [mask-image:linear-gradient(to_bottom,transparent,#000_28%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,#000_28%)] land:[mask-image:none] land:[-webkit-mask-image:none]">
-            <HeroPicture alt="Karina Fernandes" className="block h-auto w-full land:absolute land:inset-0 land:size-full land:object-cover land:object-[44%_12%]" />
+            className="relative aspect-[4/5] overflow-hidden rounded-t-[999px] rounded-b-[20px] bg-areia land:aspect-auto land:size-full land:rounded-none">
+            <HeroPicture alt="Karina Fernandes" className="absolute inset-0 size-full object-cover object-[44%_12%]" />
           </motion.div>
-          {/* fio dourado em arco */}
           <svg aria-hidden viewBox="0 0 1 1" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 hidden size-full land:block"
             style={{ maskImage: 'radial-gradient(ellipse 120% 120% at 0% 0%, #000 45%, transparent 85%)', WebkitMaskImage: 'radial-gradient(ellipse 120% 120% at 0% 0%, #000 45%, transparent 85%)' }}>
             <path d="M0.06 1V0.56C0.06 0.26 0.22 0.035 0.52 0.035C0.78 0.035 0.97 0.2 0.97 0.5" fill="none" stroke="#c8a063" strokeWidth="1.3" vectorEffect="non-scaling-stroke" />
@@ -86,17 +86,46 @@ function Hero() {
 
 function Differentials() {
   return (
-    <section className="overflow-hidden bg-papel px-5 py-16 lg:px-12 lg:py-28">
+    <section className="overflow-hidden bg-papel px-5 py-10 lg:px-12 lg:py-28">
       <h2 className="sr-only">Diferenciais</h2>
-      <ul className={`${wrap} grid gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10`}>
+      {/* celular: lista original, com ícone ao lado e animação na rolagem */}
+      <ul className={`${wrap} lg:hidden`}>
+        {differentials.map((d) => <DifferentialRow key={d.title} {...d} />)}
+      </ul>
+      {/* desktop: quatro colunas centralizadas */}
+      <ul className={`${wrap} hidden gap-10 lg:grid lg:grid-cols-4`}>
         {differentials.map((d) => <Differential key={d.title} {...d} />)}
       </ul>
     </section>
   )
 }
 
-// cada diferencial aparece acompanhando a rolagem (e recua se a página voltar):
-// a divisória se desenha, o ícone gira até o lugar e o texto desliza da direita
+// celular: cada diferencial aparece acompanhando a rolagem; a divisória se desenha, o ícone gira até o lugar e o texto desliza da direita
+function DifferentialRow({ icon, title, text }: { icon: string; title: string; text: string }) {
+  const ref = useRef<HTMLLIElement>(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 100%', 'start 60%'] })
+  const p = useSpring(scrollYProgress, smooth)
+  const line = useTransform(p, [0.1, 1], [0, 1])
+  const iconIn = useTransform(p, [0, 0.6], [0, 1])
+  const iconScale = useTransform(iconIn, [0, 1], [0.4, 1])
+  const iconRotate = useTransform(iconIn, [0, 1], [-30, 0])
+  const textIn = useTransform(p, [0.2, 0.85], [0, 1])
+  const textX = useTransform(textIn, [0, 1], [48, 0])
+  const textBlur = useTransform(textIn, [0, 1], ['blur(6px)', 'blur(0px)'])
+  return (
+    <li ref={ref} className="group relative flex items-start gap-5 py-7 first:pt-0 lg:gap-6">
+      <motion.span aria-hidden style={{ scaleX: line }} className="absolute inset-x-0 bottom-0 h-px origin-left bg-cafe/15" />
+      <motion.span style={{ opacity: iconIn, scale: iconScale, rotate: iconRotate }} className="mt-0.5 shrink-0 text-ouro">
+        <span className="block transition-transform duration-300 group-hover:scale-110"><Icon name={icon} className="size-9 lg:size-10" /></span>
+      </motion.span>
+      <motion.div style={{ opacity: textIn, x: textX, filter: textBlur }} className="pt-1">
+        <h3 className="font-display text-[22px] font-semibold leading-tight tracking-tight">{title}</h3>
+        <p className="mt-1.5 max-w-[44ch] text-[15px] leading-relaxed text-cinza">{text}</p>
+      </motion.div>
+    </li>
+  )
+}
+
 function Differential({ icon, title, text }: { icon: string; title: string; text: string }) {
   const ref = useRef<HTMLLIElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 100%', 'start 65%'] })
@@ -154,7 +183,7 @@ function About() {
             <Deco name="moldura-arco" fit className="size-full" />
           </span>
           <div className="relative aspect-[4/5] overflow-hidden rounded-t-[999px] rounded-b-[28px] bg-areia">
-            <Img name="karina-retrato" sizes="(min-width: 1024px) 45vw, 90vw" alt={`${brand.name}, ${brand.role}`} className="absolute inset-0 size-full object-cover object-[44%_20%]" />
+            <Img name="karina-pincas" sizes="(min-width: 1024px) 45vw, 90vw" alt={`${brand.name} segurando pinças douradas de extensão de cílios`} className="absolute inset-0 size-full object-cover object-[50%_30%]" />
           </div>
           <motion.div style={{ rotate: spin }} className="absolute -bottom-7 -left-2 size-28 rounded-full bg-papel p-2 text-ouro sm:-left-6 sm:size-32 lg:-left-8">
             <Seal />
@@ -169,14 +198,8 @@ function About() {
           </div>
           <Ornament className="mt-5 w-40 text-dourado lg:w-52" />
           <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.8, ease, delay: 0.2 }}>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-cafe">Sou a Karina, lash designer. Meu trabalho é destacar a sua beleza com cílios volumosos ou mais naturais, escolhendo com você a técnica que combina com o seu olhar.</p>
-            <p className="mt-4 max-w-xl leading-relaxed text-cinza">O atendimento é com hora marcada e leva em média de 2 a 3 horas: um momento que pede calma, cuidado e atenção aos detalhes, para que possamos ter um resultado perfeito.</p>
-            <p className="mt-6 font-script text-[34px] leading-none text-ouro">Sua beleza, nosso propósito.</p>
-            <p className="mt-4 font-display text-xl font-semibold tracking-tight">{brand.name}<span className="ml-2 font-sans text-[15px] font-normal tracking-normal text-cinza">{brand.role}</span></p>
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
-              <Btn to="/#procedimentos">Ver serviços e valores</Btn>
-              <Btn variant="outline" href={waUrl(undefined, 'duvida')}><Icon name="chat" className="size-5" />Tirar dúvida no WhatsApp<WaNote /></Btn>
-            </div>
+            <p className="mt-6 max-w-md text-lg leading-relaxed text-cafe">Sou a Karina, lash designer. Escolho com você a técnica que combina com o seu olhar, sem pressa e com atenção aos detalhes.</p>
+            <div className="mt-8"><Btn to="/#procedimentos">Ver serviços e valores</Btn></div>
           </motion.div>
           <Location />
         </div>
@@ -185,42 +208,16 @@ function About() {
   )
 }
 
-// o iframe só é montado perto da tela: o embed do Google toma o foco ao carregar e puxava a página até o mapa
-function MapFrame({ address }: { address: string }) {
-  const box = useRef<HTMLDivElement>(null)
-  const [near, setNear] = useState(false)
-  useEffect(() => {
-    const el = box.current
-    if (!el) return
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setNear(true); io.disconnect() } }, { rootMargin: '200px' })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
-  return (
-    <div ref={box} className="aspect-[4/3] w-full sm:aspect-[16/9]">
-      {near && <iframe title={`Mapa: ${address}`} src={`https://www.google.com/maps?q=${encodeURIComponent(address)}&z=16&output=embed`}
-        referrerPolicy="no-referrer-when-downgrade" allowFullScreen className="block size-full border-0" />}
-    </div>
-  )
-}
-
-// mapa interativo do endereço (Google Maps embutido, sem chave de API); só aparece com o endereço preenchido em lib/data.ts
 function Location() {
   if (!contact.address) return null
   const link = contact.mapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact.address)}`
   return (
-    <div className="mt-12">
-      <h3 className="font-display text-[26px] font-semibold">Onde me encontrar</h3>
-      <p className="mt-1.5 text-[15px] leading-relaxed text-cinza">{contact.address}</p>
-      <div className="mt-5 overflow-hidden rounded-[20px] bg-creme ring-1 ring-cafe/10">
-        <MapFrame address={contact.address} />
-      </div>
-      <div className="mt-4">
-        <Btn variant="outline" href={link} className="w-full">
-          <svg aria-hidden viewBox="0 0 24 24" fill="currentColor" className="size-5 shrink-0"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z" /></svg>
-          Abrir no Google Maps<WaNote />
-        </Btn>
-      </div>
+    <div className="mt-10 flex items-start gap-3 border-t border-cafe/15 pt-6">
+      <MapPin aria-hidden strokeWidth={1.5} className="mt-0.5 size-5 shrink-0 text-ouro" />
+      <p className="text-[15px] leading-relaxed text-cinza">
+        {contact.address}{' '}
+        <a href={link} target="_blank" rel="noopener noreferrer" className="whitespace-nowrap font-medium text-cafe underline decoration-ouro/50 underline-offset-4 hover:decoration-ouro">Abrir no mapa<WaNote /></a>
+      </p>
     </div>
   )
 }
@@ -299,10 +296,7 @@ export default function Home() {
           <Deco name="onda-secao" className="block aspect-[1440/120] w-[220%] -translate-x-[27%] sm:w-[calc(100%+4px)] sm:-translate-x-0.5" />
         </div>
         <div className={`${wrap} relative`}>
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <h2 className="text-[44px] sm:text-6xl"><Lines lines={['Serviços', 'e valores']} /></h2>
-            <p className="max-w-sm text-cinza lg:pb-2">Escolha a técnica e agende pelo WhatsApp. Confirme a disponibilidade do seu horário.</p>
-          </div>
+          <h2 className="text-center text-[44px] sm:text-6xl"><Lines lines={['Serviços e valores']} /></h2>
           <ProcedureDeck />
           <Extras />
           <Hours />

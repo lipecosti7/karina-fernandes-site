@@ -17,13 +17,14 @@ const foto = (slug: string, width: number, height: number): ImageInfo => ({ base
 
 export const images = {
   'karina-retrato': { base: '/karina-retrato', ext: 'jpeg', width: 1550, height: 1422, widths: [720, 1080, 1550] },
+  'karina-pincas': { base: '/karina-pincas', ext: 'jpeg', width: 1200, height: 1600, widths: [720, 1080] },
   'servico-brasileiro': foto('brasileiro', 660, 660),
   'servico-egipcio': foto('egipcio', 660, 660),
   'servico-luxo': foto('luxo', 1050, 970),
   'servico-fox-eyes': foto('fox-eyes', 960, 890),
   'servico-glamour': foto('glamour', 996, 914),
-  'servico-sobrancelhas': foto('sobrancelhas', 960, 860),
-  'servico-henna': foto('henna', 920, 852),
+  'servico-sobrancelhas': foto('sobrancelhas', 960, 1280),
+  'servico-henna': foto('henna', 960, 1280),
   // logo/assinatura com fundo transparente: dourado (sobre fundo claro) e claro (sobre fundo dourado/escuro)
   'logo-ouro': { base: '/logo-ouro', width: 625, height: 361, widths: [320, 625], avif: false, png: true },
   'logo-claro': { base: '/logo-claro', width: 625, height: 361, widths: [320, 625], avif: false, png: true },

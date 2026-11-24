@@ -59,9 +59,9 @@ export const procedures: Procedure[] = [
     description: 'Um olhar mais alongado, elegante e marcante.', detail: 'O mapeamento é desenvolvido para alongar o canto externo dos olhos, valorizando os traços do rosto com leveza e naturalidade. Ideal para quem busca um visual refinado, sensual e inspirado nas maiores tendências da beleza.' },
   { id: 5, name: 'Glamour', group: 'cilios', thread: 'Fio U', price: 90, maintenance: 70, photo: '/assets/servico-glamour-768.webp', alt: 'Extensão de cílios, técnica Glamour',
     description: 'Efeito com leques mais fechados, para maior preenchimento e um olhar marcante.', detail: 'Perfeito para quem deseja cílios sofisticados, intensos e elegantes, bem cheios. O fio U é ideal para quem tem bastante cílios naturais.' },
-  { id: 6, name: 'Design de sobrancelhas', group: 'sobrancelhas', price: 20, photo: '/assets/servico-sobrancelhas-768.webp', alt: 'Resultado de design de sobrancelhas',
+  { id: 6, name: 'Design de sobrancelhas', group: 'sobrancelhas', price: 20, photo: '/assets/servico-sobrancelhas-768.webp', alt: 'Cliente com design de sobrancelhas personalizado e extensão de cílios',
     description: 'Beleza na medida certa: o design simples realça seu olhar de forma natural, leve e elegante.', detail: 'Perfeito para quem ama discrição sem perder o charme.' },
-  { id: 7, name: 'Design com henna', group: 'sobrancelhas', price: 40, photo: '/assets/servico-henna-768.webp', alt: 'Resultado de design de sobrancelhas com henna',
+  { id: 7, name: 'Design com henna', group: 'sobrancelhas', price: 40, photo: '/assets/servico-henna-768.webp', alt: 'Cliente com design de sobrancelhas com henna',
     description: 'A henna proporciona um efeito de maquiagem temporária, tingindo tanto os fios quanto a pele.', detail: 'Garante um olhar mais marcante e definido.' },
 ]
 // serviços avulsos, sem foto no catálogo
