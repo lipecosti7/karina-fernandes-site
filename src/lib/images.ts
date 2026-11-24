@@ -20,7 +20,7 @@ export const images = {
   'karina-pincas': { base: '/karina-pincas', ext: 'jpeg', width: 1200, height: 1600, widths: [720, 1080] },
   'servico-brasileiro': foto('brasileiro', 660, 660),
   'servico-egipcio': foto('egipcio', 660, 660),
-  'servico-luxo': foto('luxo', 1050, 970),
+  'servico-luxo': foto('luxo', 1302, 1444),
   'servico-fox-eyes': foto('fox-eyes', 960, 890),
   'servico-glamour': foto('glamour', 996, 914),
   'servico-sobrancelhas': foto('sobrancelhas', 960, 1280),

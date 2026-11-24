@@ -2,10 +2,6 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
-import '@fontsource/cormorant-garamond/500.css'
-import '@fontsource/cormorant-garamond/600.css'
-import '@fontsource/cormorant-garamond/500-italic.css'
-import '@fontsource/cormorant-garamond/700.css'
 import './index.css'
 // ao recarregar, a página volta ao topo (hero): sem restauração de rolagem do navegador (também no index.html, antes do React)
 // e, enquanto o visitante não interage, qualquer salto durante o carregamento (foco de iframe, imagens, fontes) é desfeito

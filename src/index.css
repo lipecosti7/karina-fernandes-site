@@ -1,8 +1,8 @@
 @import "tailwindcss";
 @theme {
   --font-sans: "Jost", system-ui, sans-serif;
-  --font-display: "Cormorant Garamond", Georgia, serif;
-  --font-script: "Allura", cursive;
+  --font-display: "Cinzel", Georgia, serif;
+  --font-script: "Parisienne", cursive;
   --color-dourado: #c8a063; /* dourado dos fios, linhas e ornamentos */
   --color-ouro: #8b6a3c; /* cor da marca nos botões, fundos e títulos de destaque (o marrom-dourado do catálogo) */
   --color-ouro-escuro: #6e5230; /* hover dos botões: a cor da marca um tom mais escura */
@@ -22,7 +22,7 @@ html::-webkit-scrollbar { display: none; }
 /* navegadores sem `overflow-x: clip`: hidden segura a largura (o sticky do desktop só existe em telas largas e navegadores atuais) */
 @supports not (overflow-x: clip) { html, body { overflow-x: hidden; } }
 body { overflow-x: clip; max-width: 100%; font-family: var(--font-sans); color: var(--color-cafe); background: var(--color-papel); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; font-variant-numeric: lining-nums; }
-h1, h2, h3 { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.01em; line-height: 1.02; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 500; letter-spacing: 0.015em; line-height: 1.12; }
 .font-script { font-family: var(--font-script); font-weight: 400; letter-spacing: 0; }
 ::selection { background: #8b6a3c; color: #fff; }
 /* foco visível em qualquer fundo: contorno na cor do texto + halo claro (aparece no dourado e some no creme) */

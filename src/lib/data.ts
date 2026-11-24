@@ -75,17 +75,17 @@ export const extras = [
 export const priceLabel = (p: Procedure) => (p.maintenance ? `Aplicação ${brl(p.price!)}\nManutenção ${brl(p.maintenance)}` : brl(p.price!))
 
 export const differentials = [
-  { icon: 'look', title: 'Técnica sob medida', text: 'Brasileiro, Egípcio, Luxo, Fox Eyes ou Glamour: você escolhe o efeito e o mapeamento é feito para o seu olhar.' },
-  { icon: 'leaf', title: 'Do natural ao marcante', text: 'Cílios volumosos ou mais naturais, com a intensidade que combina com você.' },
-  { icon: 'care', title: 'Calma e atenção aos detalhes', text: 'Um momento de cuidado, sem pressa e com paciência, para um resultado perfeito.' },
-  { icon: 'calendar', title: 'Hora marcada', text: 'Atendimento de 2 a 3 horas reservado só para você.' },
+  { icon: 'look', title: 'Técnica sob medida', text: 'Você escolhe o efeito; o mapeamento é feito para o seu olhar.' },
+  { icon: 'leaf', title: 'Do natural ao marcante', text: 'Na intensidade que combina com você.' },
+  { icon: 'care', title: 'Calma e atenção', text: 'Sem pressa, para um resultado perfeito.' },
+  { icon: 'calendar', title: 'Hora marcada', text: 'De 2 a 3 horas só para você.' },
 ] as const
 
 export const steps = [
-  { title: 'Conversa inicial', text: 'Você conta o que deseja e tira dúvidas pelo WhatsApp, sem compromisso.' },
-  { title: 'Escolha da técnica', text: 'Brasileiro, Egípcio, Luxo, Fox Eyes ou Glamour: definimos o efeito ideal para o seu olhar.' },
-  { title: 'Aplicação', text: 'Em média de 2 a 3 horas, com calma, cuidado e atenção aos detalhes.' },
-  { title: 'Manutenção', text: 'Mantenha o volume e a beleza dos cílios com a manutenção, por um valor especial.' },
+  { title: 'Conversa inicial', text: 'Você conta o que deseja, sem compromisso.' },
+  { title: 'Escolha da técnica', text: 'Definimos o efeito ideal para o seu olhar.' },
+  { title: 'Aplicação', text: 'De 2 a 3 horas, com calma e cuidado.' },
+  { title: 'Manutenção', text: 'Volume e beleza por mais tempo, por um valor especial.' },
 ]
 
 // Informações e restrições: texto do próprio catálogo da Karina (não acrescentar regras sem confirmar com ela).
@@ -103,14 +103,13 @@ export const restrictions = [
 export const policiesThanks = 'Sua beleza, nosso propósito.'
 
 export const faq = [
-  { q: 'Como agendar?', a: 'Pelo botão de WhatsApp do site. Informe a técnica desejada e combinamos o melhor dia e horário.' },
-  { q: 'Qual o horário de atendimento?', a: 'De segunda a sexta, das 8h às 20h, e aos sábados, das 9h às 16h.' },
-  { q: 'Quanto tempo dura o procedimento?', a: 'Em média de 2 a 3 horas. Por isso, venha sem compromissos marcados logo depois.' },
-  { q: 'Qual a diferença entre as técnicas?', a: 'Brasileiro (fio em Y) é um volume moderado e equilibrado. Egípcio é o mais delicado, com efeito arqueado. Luxo (5D) deixa os cílios mais cheios. Fox Eyes alonga o canto externo do olhar. Glamour (fio U) é bem cheio e intenso. Se tiver dúvida, chame no WhatsApp que ajudo você a escolher.' },
-  { q: 'O que é aplicação e manutenção?', a: 'Aplicação é o valor da colocação dos cílios; manutenção é o valor para repor e manter o volume depois. Para saber o melhor prazo da sua manutenção, pergunte no WhatsApp.' },
-  { q: 'Quem não pode fazer o procedimento?', a: 'Não é indicado em caso de olhos com irritação, infecção ou inflamação (conjuntivite, terçol, blefarite), alergia conhecida à cola ou aos produtos, queda excessiva dos cílios naturais e para gestantes.' },
-  { q: 'Posso ir de lente de contato?', a: 'Pode, mas ela será retirada durante o procedimento.' },
-  { q: 'Quais as formas de pagamento?', a: 'Pix, dinheiro e cartão (somente por aproximação).' },
+  { q: 'Como agendar?', a: 'Pelo WhatsApp do site.' },
+  { q: 'Qual o horário?', a: 'Seg a sex, 8h às 20h. Sáb, 9h às 16h.' },
+  { q: 'Quanto tempo dura?', a: 'De 2 a 3 horas.' },
+  { q: 'Qual técnica escolher?', a: 'Do mais delicado ao mais cheio. Chame no WhatsApp e eu ajudo você a escolher.' },
+  { q: 'O que é manutenção?', a: 'É a reposição que mantém o volume depois da aplicação.' },
+  { q: 'Quem não pode fazer?', a: 'Olhos irritados ou inflamados, alergia à cola, queda excessiva dos cílios e gestantes.' },
+  { q: 'Pagamento?', a: 'Pix, dinheiro e cartão por aproximação.' },
 ]
 
 export type Testimonial = { name: string; rating: number; text: string }

@@ -14,7 +14,7 @@ const wrap = 'mx-auto max-w-[1200px]'
 const smooth = { stiffness: 70, damping: 24, mass: 0.5 }
 
 // larguras geradas por scripts/optimize-servicos.mjs para cada foto (as três sem arquivo novo só têm até 768)
-const photoWidths: Record<string, number[]> = { 'servico-luxo': [480, 768, 1080, 1440], 'servico-brow': [480, 768, 1080], 'servico-fox-eyes': [480, 768, 1080], 'servico-egipcio': [480, 768], 'servico-glamour': [480, 768] }
+const photoWidths: Record<string, number[]> = { 'servico-luxo': [480, 768, 1080], 'servico-brow': [480, 768, 1080], 'servico-fox-eyes': [480, 768, 1080], 'servico-egipcio': [480, 768], 'servico-glamour': [480, 768] }
 function ServicePhoto({ photo, alt, className }: { photo: string; alt: string; className: string }) {
   const base = photo.replace(/-768.webp$/, '')
   const ws = photoWidths[base.split('/').pop()!] ?? [480, 768]
@@ -45,19 +45,29 @@ function ProcedureList() {
     return () => { window.removeEventListener('keydown', k); document.body.style.overflow = prev }
   }, [open])
   const cur = open === null ? null : procedures[open]
-  const nav = 'absolute top-1/2 grid size-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full border border-white/35 bg-white/10 text-white transition-colors hover:bg-white/25'
   return (
     <>
-      <ol className="mx-auto mt-14 flex max-w-[1040px] flex-col gap-16 lg:mt-20 lg:gap-24">
+      <ol className="-mx-5 mt-10 flex max-w-[1040px] flex-col gap-1 lg:mx-auto lg:mt-20 lg:gap-24">
         {procedures.map((p, i) => (
           <motion.li key={p.id} initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-12% 0px' }} transition={{ duration: 0.8, ease }}
-            className={`flex flex-col gap-6 lg:items-center lg:gap-16 ${i % 2 ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}>
+            className={`flex flex-col lg:items-center lg:gap-16 ${i % 2 ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}>
             <button type="button" onClick={() => setOpen(i)} aria-label={`Ver foto de ${p.name} em tela cheia`}
-              className="group relative block w-full cursor-zoom-in overflow-hidden rounded-[22px] bg-areia shadow-[0_26px_50px_-30px_rgba(61,44,29,0.5)] lg:w-[46%] lg:shrink-0">
+              className="group relative block w-full cursor-zoom-in overflow-hidden bg-areia lg:w-[46%] lg:shrink-0 lg:rounded-[22px] lg:shadow-[0_26px_50px_-30px_rgba(61,44,29,0.5)]">
               <ServicePhoto photo={p.photo} alt={p.alt} className="aspect-[4/5] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
-              <span aria-hidden className="absolute bottom-3 right-3 grid size-10 place-items-center rounded-full bg-papel/90 text-cafe"><Maximize2 className="size-[18px]" /></span>
+              <span aria-hidden className="absolute bottom-3 right-3 hidden size-10 place-items-center rounded-full bg-papel/90 text-cafe lg:grid"><Maximize2 className="size-[18px]" /></span>
+              {/* celular: nome e valor sobre a foto, uma foto por tela */}
+              <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 bg-[linear-gradient(to_top,rgba(43,30,20,0.9),transparent)] px-5 pb-5 pt-20 text-left text-white lg:hidden">
+                <span>
+                  <span className="block text-[13px] italic tracking-[0.1em] text-white/80">0{i + 1}</span>
+                  <span className="block font-display text-[26px] font-semibold leading-[1.1] tracking-[0.02em]">{p.name}</span>
+                  {p.thread ? <span className="mt-1 block text-[12px] text-white/75">{p.thread}</span> : null}
+                </span>
+                <span className="whitespace-pre-line text-right font-display text-[18px] font-semibold leading-[1.25] text-[#e8cfa0]">
+                  {p.price === undefined ? 'Sob consulta' : p.maintenance ? `${brl(p.price)}\nmanut. ${brl(p.maintenance)}` : brl(p.price)}
+                </span>
+              </span>
             </button>
-            <div className="lg:flex-1">
+            <div className="hidden lg:block lg:flex-1">
               <h3 className="text-[40px] leading-[1.02] sm:text-5xl">{p.name}</h3>
               <p className="mt-4 flex flex-wrap items-baseline gap-x-5 gap-y-1 border-t border-cafe/15 pt-5 font-display text-[24px] font-semibold text-cafe">
                 {p.maintenance
@@ -71,12 +81,24 @@ function ProcedureList() {
       </ol>
       {cur && open !== null ? (
         <div role="dialog" aria-modal="true" aria-label={cur.name} onClick={() => setOpen(null)}
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-[#1e140a]/95 px-4 pb-5 pt-14">
-          <button type="button" autoFocus aria-label="Fechar" onClick={() => setOpen(null)} className={`${nav} !top-5 !right-4 !translate-y-0`}><X className="size-5" /></button>
-          <button type="button" aria-label="Foto anterior" onClick={(e) => { e.stopPropagation(); setOpen((open - 1 + procedures.length) % procedures.length) }} className={`${nav} left-3`}><ChevronLeft className="size-5" /></button>
-          <img src={cur.photo.replace('-768.webp', '.jpeg')} alt={cur.alt} onClick={(e) => e.stopPropagation()} className="max-h-[calc(100svh-150px)] max-w-full rounded-xl object-contain shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]" />
-          <p onClick={(e) => e.stopPropagation()} className="text-center font-display text-2xl font-semibold text-white">{cur.name}<span className="mt-1 block font-sans text-sm font-normal text-white/75">{priceLabel(cur).replace('\n', ' · ')}</span></p>
-          <button type="button" aria-label="Próxima foto" onClick={(e) => { e.stopPropagation(); setOpen((open + 1) % procedures.length) }} className={`${nav} right-3`}><ChevronRight className="size-5" /></button>
+          className="fixed inset-0 z-[100] flex flex-col bg-[#150d07] pt-[max(1rem,env(safe-area-inset-top))] text-white">
+          <div className="flex items-center justify-between px-5 pb-3" onClick={(e) => e.stopPropagation()}>
+            <span className="text-[13px] tracking-[0.3em] text-white/70">{String(open + 1).padStart(2, '0')} <span className="text-white/35">/ {String(procedures.length).padStart(2, '0')}</span></span>
+            <button type="button" autoFocus aria-label="Fechar" onClick={() => setOpen(null)} className="grid size-11 cursor-pointer place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"><X className="size-5" /></button>
+          </div>
+          <div className="relative min-h-0 flex-1 px-3 lg:px-16" onClick={(e) => e.stopPropagation()}>
+            <img src={cur.photo.replace('-768.webp', '.jpeg')} alt={cur.alt} className="size-full rounded-2xl object-contain" />
+          </div>
+          <div className="px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-5 text-center" onClick={(e) => e.stopPropagation()}>
+            <p className="font-display text-[28px] font-semibold leading-none tracking-[0.04em]">{cur.name}</p>
+            {cur.thread ? <p className="mt-2 text-[13px] text-white/60">{cur.thread}</p> : null}
+            <p className="mt-3 font-display text-[18px] font-semibold text-[#e8cfa0]">{priceLabel(cur).replace('\n', '  ·  ')}</p>
+            <div className="mx-auto mt-5 flex max-w-md items-center gap-3">
+              <button type="button" aria-label="Foto anterior" onClick={() => setOpen((open - 1 + procedures.length) % procedures.length)} className="grid size-12 shrink-0 cursor-pointer place-items-center rounded-full border border-white/25 text-white transition-colors hover:bg-white/10"><ChevronLeft className="size-5" /></button>
+              <a href={waUrl(cur.name)} target="_blank" rel="noopener noreferrer" className="flex min-h-12 flex-1 items-center justify-center rounded-full bg-ouro px-6 text-[15px] font-semibold text-white transition-colors hover:bg-ouro-escuro">Agendar {cur.name}</a>
+              <button type="button" aria-label="Próxima foto" onClick={() => setOpen((open + 1) % procedures.length)} className="grid size-12 shrink-0 cursor-pointer place-items-center rounded-full border border-white/25 text-white transition-colors hover:bg-white/10"><ChevronRight className="size-5" /></button>
+            </div>
+          </div>
         </div>
       ) : null}
     </>
@@ -95,19 +117,18 @@ function Hero() {
     <>
     {/* celular: foto em tela cheia (exatamente a altura da tela, sem rolagem) com o texto embaixo sobre um degradê escuro */}
     <section className="relative h-svh overflow-hidden bg-[#2c1f15] text-papel land:hidden">
-      <motion.div {...(animated ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 1.4, ease } } : {})} className="absolute -left-[4%] top-[72px] aspect-[3/4] w-[112%] [mask-image:linear-gradient(to_bottom,#000_80%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,#000_80%,transparent)]">
-        <HeroPicture alt="Karina Fernandes" pictureClassName="block size-full" className="absolute inset-0 size-full object-cover object-[50%_0%]" />
+      <motion.div {...(animated ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 1.4, ease } } : {})} className="absolute inset-0">
+        <HeroPicture alt="Karina Fernandes" pictureClassName="block size-full" className="absolute inset-0 size-full object-cover object-[50%_50%]" />
       </motion.div>
-      <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] bg-[linear-gradient(to_top,rgba(43,30,20,0.92),rgba(43,30,20,0.62)_55%,transparent)]" />
-      <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[linear-gradient(to_bottom,rgba(43,30,20,0.45),transparent)]" />
+      <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[42%] bg-[linear-gradient(to_top,rgba(61,44,29,0.94),rgba(61,44,29,0.5)_60%,transparent)]" />
       <div className="absolute inset-x-0 bottom-0 flex flex-col items-center px-6 pb-[max(2.5rem,env(safe-area-inset-bottom))] text-center">
         <motion.p {...rise(0.1)} className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.34em] text-dourado">
           <span className="h-px w-8 bg-dourado/60" />{brand.role}<span className="h-px w-8 bg-dourado/60" />
         </motion.p>
-        <h1 className="mt-4 font-display text-[clamp(44px,13vw,64px)] font-bold leading-[1] tracking-[-0.01em]">
+        <h1 className="mt-4 font-display text-[min(36px,calc((100vw-3rem)/11.6))] font-semibold leading-[1.1] tracking-[0.03em]">
           <span className="sr-only">{brand.name} — {brand.role}. </span>
-          <motion.span {...rise(0.25)} className="block text-papel">Um olhar feito</motion.span>
-          <motion.span {...rise(0.45)} className="-mt-1 block font-script text-[1.25em] font-normal leading-[1.1] tracking-normal text-dourado">sob medida</motion.span>
+          <motion.span {...rise(0.25)} className="block whitespace-nowrap text-dourado">Um olhar feito</motion.span>
+          <motion.span {...rise(0.45)} className="-mt-1 block font-script text-[clamp(72px,22vw,96px)] font-normal leading-[1] tracking-normal text-papel [text-shadow:0_2px_24px_rgba(43,30,20,0.55)]">sob medida</motion.span>
         </h1>
         <motion.p {...rise(0.7)} className="mt-4 max-w-[30ch] text-[15px] leading-snug text-papel/85">
           Cílios e sobrancelhas com atendimento individual e hora marcada.
@@ -133,10 +154,10 @@ function HeroDesktop() {
           <motion.p {...rise(0.1)} className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.34em] text-ouro">
             <span className="h-px w-12 bg-ouro/50" />{brand.role}
           </motion.p>
-          <h1 className="mt-6 font-display text-[clamp(64px,6.4vw,108px)] font-bold leading-[1] tracking-[-0.01em]">
+          <h1 className="mt-6 font-display text-[clamp(34px,3.6vw,60px)] font-semibold leading-[1.1] tracking-[0.03em]">
             <span className="sr-only">{brand.name} — {brand.role}. </span>
-            <motion.span {...rise(0.25)} className="block text-cafe">Um olhar feito</motion.span>
-            <motion.span {...rise(0.45)} className="-mt-1 block font-script text-[1.25em] font-normal leading-[1.1] tracking-normal text-ouro">sob medida</motion.span>
+            <motion.span {...rise(0.25)} className="block whitespace-nowrap text-ouro">Um olhar feito</motion.span>
+            <motion.span {...rise(0.45)} className="-mt-1 block font-script text-[clamp(88px,9.4vw,168px)] font-normal leading-[1] tracking-normal text-cafe">sob medida</motion.span>
           </h1>
           <motion.p {...rise(0.7)} className="mt-6 max-w-[36ch] text-[18px] leading-snug text-cafe/80">
             Cílios e sobrancelhas com atendimento individual e hora marcada.
@@ -218,7 +239,7 @@ function BookingPolicy() {
     <section className="px-5 pt-20 text-center lg:px-12 lg:pt-32">
       <div className={`${wrap} flex flex-col items-center`}>
         <h2 className="text-[40px] sm:text-6xl"><Lines lines={['Antes de agendar']} /></h2>
-        <p className="mt-5 max-w-md text-cinza">O atendimento leva de 2 a 3 horas. Confira as restrições antes de marcar o seu horário.</p>
+        <p className="mt-5 max-w-md text-cinza">Atendimento de 2 a 3 horas. Confira as restrições antes de marcar.</p>
         <Link to="/informacoes" className="group mt-8 inline-flex items-center gap-3 text-[15px] font-medium text-cafe">
           <span className="border-b border-cafe pb-1">Ver informações completas</span>
           <ArrowUpRight aria-hidden strokeWidth={1.6} className="size-5 transition-transform duration-300 group-hover:rotate-45" />
@@ -270,7 +291,7 @@ function About() {
           </div>
           <Ornament className="mt-5 w-40 text-dourado lg:w-52" />
           <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.8, ease, delay: 0.2 }}>
-            <p className="mt-6 max-w-md text-lg leading-relaxed text-cafe">Sou a Karina, lash designer. Escolho com você a técnica que combina com o seu olhar, sem pressa e com atenção aos detalhes.</p>
+            <p className="mt-6 max-w-md text-lg leading-relaxed text-cafe">Sou a Karina, lash designer. Escolho com você a técnica que combina com o seu olhar.</p>
             <div className="mt-8"><Btn to="/#procedimentos">Ver serviços e valores</Btn></div>
           </motion.div>
           <Location />
@@ -335,14 +356,13 @@ function HowItWorks() {
 // serviços avulsos (sem foto): lista editorial com valor à direita
 function Extras() {
   return (
-    <div className="mx-auto mt-16 max-w-xl lg:mt-24">
-      <p className="text-center text-xs font-semibold uppercase tracking-[0.24em] text-ouro">Outros serviços</p>
-      <ul className="mt-6">
+    <div className="mx-auto mt-16 max-w-xl rounded-[28px] bg-cafe px-5 py-9 sm:px-9 lg:mt-24">
+      <p className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-dourado">Outros serviços</p>
+      <ul className="mt-6 flex flex-col gap-3.5">
         {extras.map((e) => (
-          <li key={e.name} className="flex items-baseline gap-4 border-b border-ouro/25 py-4">
-            <span className="font-display text-[26px] leading-none">{e.name}</span>
-            <span aria-hidden className="flex-1 translate-y-[-4px] border-b border-dotted border-ouro/40" />
-            <span className="font-display text-[26px] leading-none text-ouro">{brl(e.price)}</span>
+          <li key={e.name} className="flex items-center justify-between gap-4 rounded-full border border-dourado/50 px-6 py-4 sm:px-8">
+            <span className="font-display text-[19px] leading-none tracking-[0.02em] text-papel sm:text-[22px]">{e.name}</span>
+            <span className="font-display text-[19px] leading-none text-dourado sm:text-[22px]">{brl(e.price)}</span>
           </li>
         ))}
       </ul>
@@ -385,7 +405,7 @@ export default function Home() {
         <div className={`${wrap} grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20`}>
           <div>
             <h2 className="text-[44px] sm:text-6xl"><Lines lines={['Perguntas', 'frequentes']} /></h2>
-            <p className="mt-5 max-w-sm text-cinza">Não encontrou o que procurava? Chame no WhatsApp, respondo com prazer.</p>
+            <p className="mt-5 max-w-sm text-cinza">Ficou com dúvida? Chame no WhatsApp.</p>
             <div className="mt-6"><Btn variant="outline" href={waUrl(undefined, 'duvida')}>Tirar dúvida no WhatsApp<WaNote /></Btn></div>
           </div>
           <Faq />
