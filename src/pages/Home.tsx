@@ -94,24 +94,64 @@ function Hero() {
     const fadeV = '[mask-image:linear-gradient(to_bottom,transparent,#000_26%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,#000_26%)]'
   const fadeH = 'land:[mask-image:linear-gradient(to_right,transparent,#000_18%)] land:[-webkit-mask-image:linear-gradient(to_right,transparent,#000_18%)]'
   return (
-    <section className="relative flex min-h-[max(100svh,720px)] flex-col overflow-hidden bg-[linear-gradient(to_right,#e2d1c0,#ece0d2_50%,#f3e9df)] text-cafe land:min-h-[max(100svh,780px)] land:bg-none land:bg-areia">
+    <>
+    <section className="relative flex min-h-[max(100svh,720px)] flex-col overflow-hidden bg-[linear-gradient(to_right,#e2d1c0,#ece0d2_50%,#f3e9df)] text-cafe land:hidden">
       {/* foto de fundo colada na base da seção (celular) ou na metade direita (paisagem); o fundo dela é o tom da seção, então a emenda some */}
       <motion.div {...(animated ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 1.6, ease } } : {})}
-        className={`${fadeV} ${fadeH} absolute inset-x-0 bottom-0 h-[60%] land:inset-y-0 land:left-auto land:right-0 land:h-auto land:w-[62%]`}>
-        <HeroPicture alt="Karina Fernandes" pictureClassName="block size-full" className="absolute inset-0 size-full object-cover object-[46%_6%] land:object-[50%_16%]" />
+        className={`${fadeV} ${fadeH} absolute inset-x-0 bottom-0 h-[60%] land:inset-y-0 land:left-auto land:right-0 land:h-auto land:w-[66%]`}>
+        <HeroPicture alt="Karina Fernandes" pictureClassName="block size-full" className="absolute inset-0 size-full object-cover object-[46%_6%] land:object-[50%_8%]" />
       </motion.div>
-      <div className="relative z-10 flex flex-col items-center px-6 pt-[104px] text-center sm:px-10 land:absolute land:inset-y-0 land:left-0 land:w-[54%] land:items-start land:justify-center land:pl-[clamp(2rem,8vw,8rem)] land:pr-6 land:pt-[84px] land:text-left">
+      <div className="relative z-10 flex flex-col items-center px-6 pt-[104px] text-center sm:px-10 land:absolute land:inset-y-0 land:left-0 land:w-[56%] land:items-start land:justify-center land:pl-[clamp(2rem,8vw,8rem)] land:pr-6 land:pt-[84px] land:text-left">
         <motion.p {...rise(0.1)} className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.34em] text-ouro">
           <span className="h-px w-8 bg-ouro/50 land:w-12" />{brand.role}<span className="h-px w-8 bg-ouro/50 land:hidden" />
         </motion.p>
-        <h1 className="mt-4 font-display text-[clamp(46px,13vw,68px)] font-bold leading-[1] tracking-[-0.01em] land:mt-6 land:text-[clamp(64px,6.4vw,108px)]">
+        <h1 className="mt-4 font-display text-[clamp(46px,13vw,68px)] font-bold leading-[1] tracking-[-0.01em] land:mt-6 land:text-[clamp(64px,7vw,120px)]">
           <span className="sr-only">{brand.name} — {brand.role}. </span>
           <motion.span {...rise(0.25)} className="block text-cafe">Um olhar feito</motion.span>
           <motion.span {...rise(0.45)} className="-mt-1 block font-script text-[1.25em] font-normal leading-[1.1] tracking-normal text-ouro">sob medida</motion.span>
         </h1>
-        <motion.p {...rise(0.7)} className="mt-4 max-w-[30ch] text-[15px] leading-snug text-cafe/80 land:mt-6 land:max-w-[36ch] land:text-[18px]">
+        <motion.p {...rise(0.7)} className="mt-4 max-w-[30ch] text-[15px] leading-snug text-cafe/80 land:mt-6 land:max-w-[36ch] land:text-[19px]">
           Cílios e sobrancelhas com atendimento individual e hora marcada.
         </motion.p>
+      </div>
+    </section>
+    <HeroDesktop />
+    </>
+  )
+}
+
+/* desktop/paisagem: texto à esquerda, retrato em forma de arco na metade direita com fio dourado */
+function HeroDesktop() {
+  const animated = useLand()
+  const rise = (delay: number) => ({ initial: animated ? { opacity: 0, y: 14 } : false, animate: { opacity: 1, y: 0 }, transition: { duration: 0.9, ease, delay } } as const)
+  return (
+    <section className="relative hidden min-h-[max(100svh,780px)] flex-col bg-papel pt-[84px] text-cafe land:flex">
+      <svg aria-hidden width="0" height="0" className="absolute">
+        <clipPath id="hero-forma" clipPathUnits="objectBoundingBox"><path d="M0.5 0C0.224 0 0 0.246 0 0.55V1H1V0Z" /></clipPath>
+      </svg>
+      <div className="relative flex flex-1 flex-col">
+        <div className="absolute inset-y-0 left-0 z-10 flex w-[52%] flex-col items-start justify-center pl-[clamp(2rem,8.2vw,8rem)] pr-6 text-left">
+          <motion.p {...rise(0.1)} className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.34em] text-ouro">
+            <span className="h-px w-12 bg-ouro/50" />{brand.role}
+          </motion.p>
+          <h1 className="mt-6 font-display text-[clamp(64px,6.4vw,108px)] font-bold leading-[1] tracking-[-0.01em]">
+            <span className="sr-only">{brand.name} — {brand.role}. </span>
+            <motion.span {...rise(0.25)} className="block text-cafe">Um olhar feito</motion.span>
+            <motion.span {...rise(0.45)} className="-mt-1 block font-script text-[1.25em] font-normal leading-[1.1] tracking-normal text-ouro">sob medida</motion.span>
+          </h1>
+          <motion.p {...rise(0.7)} className="mt-6 max-w-[36ch] text-[18px] leading-snug text-cafe/80">
+            Cílios e sobrancelhas com atendimento individual e hora marcada.
+          </motion.p>
+        </div>
+        <div className="absolute inset-y-0 right-0 w-1/2 [clip-path:url(#hero-forma)]">
+          <motion.div {...(animated ? { initial: { scale: 1.06 }, animate: { scale: 1 }, transition: { duration: 2, ease } } : {})} className="relative size-full overflow-hidden bg-areia">
+            <HeroPicture alt="Karina Fernandes" className="absolute inset-0 size-full object-cover object-[50%_12%]" />
+          </motion.div>
+          <svg aria-hidden viewBox="0 0 1 1" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 size-full"
+            style={{ maskImage: 'radial-gradient(ellipse 120% 120% at 0% 0%, #000 45%, transparent 85%)', WebkitMaskImage: 'radial-gradient(ellipse 120% 120% at 0% 0%, #000 45%, transparent 85%)' }}>
+            <path d="M0.06 1V0.56C0.06 0.26 0.22 0.035 0.52 0.035C0.78 0.035 0.97 0.2 0.97 0.5" fill="none" stroke="#c8a063" strokeWidth="1.3" vectorEffect="non-scaling-stroke" />
+          </svg>
+        </div>
       </div>
     </section>
   )
