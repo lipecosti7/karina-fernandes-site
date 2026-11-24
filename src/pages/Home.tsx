@@ -14,7 +14,7 @@ import { brand, brl, contact, differentials, extras, priceLabel, procedures, ste
 const wrap = 'mx-auto max-w-[1200px]'
 const smooth = { stiffness: 70, damping: 24, mass: 0.5 }
 // fotos reais dos serviços (recortadas do catálogo; WebP otimizado em public/assets, gerado por `npm run images`)
-const deckSlides: Slide[] = procedures.map((p) => ({ image: p.photo, title: p.name, caption: p.description, price: priceLabel(p), alt: p.alt }))
+const deckSlides: Slide[] = procedures.map((p) => ({ image: p.photo, title: p.name, price: priceLabel(p), alt: p.alt }))
 
 // catálogo: cartões empilhados (arraste, use as setas ou os botões). Título, descrição e valor ficam sobre a foto;
 // o botão de agendar acompanha o cartão do topo na faixa de controles
@@ -24,7 +24,7 @@ function ProcedureDeck() {
   const wide = useSyncExternalStore(subscribeWide, () => window.matchMedia('(min-width: 1024px)').matches, () => false)
   return (
     <div className="mt-2 lg:mt-6">
-      <CardDeckCarousel slides={deckSlides} aspect="4 / 5" scatter={wide ? 11 : 7} spread={wide ? 120 : 0} autoplay={0} height="min(100svh, 780px)" cardWidth="min(78vw, 400px)" showCount={false}
+      <CardDeckCarousel slides={deckSlides} aspect="3 / 4" scatter={wide ? 11 : 7} spread={wide ? 120 : 0} autoplay={0} height="min(125svh, 1000px)" cardWidth="min(86vw, 460px)" showCount={false}
         style={{ height: 'auto' }} background="transparent" ink="var(--color-cafe)" ariaLabel="Serviços"
         meta={(i) => <div><Btn href={waUrl(procedures[i].name)} className="w-full">Agendar<span className="sr-only"> {procedures[i].name}</span><WaNote /></Btn></div>} />
     </div>

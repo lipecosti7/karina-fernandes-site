@@ -262,7 +262,8 @@ const CD_CSS = [
   ".cd-card[data-drag='1']{cursor:grabbing;transition:none}",
   ".cd-card[data-fly='1']{transition:transform .45s cubic-bezier(.3,.5,.3,1),opacity .45s ease}",
   ".cd-card[data-snap='1']{transition:none}",
-  ".cd-card img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;display:block;pointer-events:none;user-select:none}",
+  ".cd-card img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:contain;display:block;pointer-events:none;user-select:none}",
+  ".cd-card img.cd-bg{object-fit:cover;filter:blur(22px) saturate(1.1);transform:scale(1.2)}",
   ".cd-meta{display:flex;align-items:center;gap:clamp(12px,2vw,20px);width:min(100%,460px);transform:translateX(var(--cd-shift,0px))}",
   ".cd-over{position:absolute;inset:auto 0 0 0;padding:64px 18px 18px;color:#fff;background:linear-gradient(to top,rgba(40,26,12,.92),rgba(40,26,12,.6) 62%,transparent);opacity:0;transition:opacity .4s ease;pointer-events:none}",
   ".cd-card[data-top='1'] .cd-over,.cd-card[data-top='1'] .cd-price{opacity:1}",
@@ -476,6 +477,7 @@ export default function CardDeckCarousel({
               onPointerUp={isTop ? onUp : undefined}
               onPointerCancel={isTop ? onUp : undefined}
             >
+              {srcs[i] ? <img className="cd-bg" src={srcs[i]} alt="" aria-hidden="true" draggable={false} /> : null}
               {srcs[i] ? <img src={srcs[i]} alt={isTop ? sl.alt || sl.title || "" : ""} draggable={false} /> : null}
               {sl.price ? <span className="cd-price">{sl.price}</span> : null}
               {sl.title || sl.caption ? (
