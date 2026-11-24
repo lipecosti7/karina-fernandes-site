@@ -47,7 +47,7 @@ export function Header() {
     <>
       <header className="fixed inset-x-0 top-0 z-30 h-[72px] transform-gpu border-b border-black/5 bg-papel px-5 lg:px-12">
         <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between gap-6">
-        <Link to="/" aria-label="Karina Fernandes, Lash Designer: início" className="flex items-center gap-3"><Logo variant="mono" decorative className="h-[48px]" /><span aria-hidden className="hidden flex-col leading-none sm:flex"><span className="font-script text-[28px] text-ouro">Karina Fernandes</span><span className="mt-1 text-[10px] font-medium uppercase tracking-[0.32em] text-ouro">Lash Designer</span></span></Link>
+        <Link to="/" aria-label="Karina Fernandes, Lash Designer: início" className="flex items-center"><Logo variant="mono" decorative className="h-[52px]" /></Link>
         <nav className="hidden gap-8 text-[15px] font-medium text-cafe xl:flex" aria-label="Principal">
           {links.map((l) => (
             <Link key={l.label} to={l.to} aria-current={isActive(l.to, pathname, hash) ? 'page' : undefined} className="relative py-1 after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-dourado after:transition hover:text-ouro hover:after:scale-x-100">{l.label}</Link>

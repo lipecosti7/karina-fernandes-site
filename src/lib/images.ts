@@ -26,10 +26,10 @@ export const images = {
   'servico-sobrancelhas': foto('sobrancelhas', 960, 1280),
   'servico-henna': foto('henna', 960, 1280),
   // logo/assinatura com fundo transparente: dourado (sobre fundo claro) e claro (sobre fundo dourado/escuro)
-  'logo-ouro': { base: '/logo-ouro', width: 625, height: 361, widths: [320, 625], avif: false, png: true },
-  'logo-claro': { base: '/logo-claro', width: 625, height: 361, widths: [320, 625], avif: false, png: true },
-  'logo-mono': { base: '/logo-mono', width: 335, height: 235, widths: [160, 335], avif: false, png: true },
-  'logo-mono-claro': { base: '/logo-mono-claro', width: 335, height: 235, widths: [160, 335], avif: false, png: true },
+  'logo-ouro': { base: '/logo-ouro', width: 625, height: 369, widths: [320, 625], avif: false, png: true },
+  'logo-claro': { base: '/logo-claro', width: 625, height: 369, widths: [320, 625], avif: false, png: true },
+  'logo-mono': { base: '/logo-mono', width: 335, height: 198, widths: [160, 335], avif: false, png: true },
+  'logo-mono-claro': { base: '/logo-mono-claro', width: 335, height: 198, widths: [160, 335], avif: false, png: true },
 } satisfies Record<string, ImageInfo>
 
 export type ImageName = keyof typeof images
