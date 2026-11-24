@@ -94,9 +94,9 @@ function Hero() {
   return (
     <>
     {/* celular: foto em tela cheia (exatamente a altura da tela, sem rolagem) com o texto embaixo sobre um degradê escuro */}
-    <section className="relative h-svh overflow-hidden bg-cafe text-papel land:hidden">
-      <motion.div {...(animated ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 1.4, ease } } : {})} className="absolute inset-0">
-        <HeroPicture alt="Karina Fernandes" pictureClassName="block size-full" className="absolute inset-0 size-full object-cover object-[14%_30%]" />
+    <section className="relative h-svh overflow-hidden bg-[#2c1f15] text-papel land:hidden">
+      <motion.div {...(animated ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 1.4, ease } } : {})} className="absolute -left-[4%] top-[72px] aspect-[3/4] w-[112%] [mask-image:linear-gradient(to_bottom,#000_80%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,#000_80%,transparent)]">
+        <HeroPicture alt="Karina Fernandes" pictureClassName="block size-full" className="absolute inset-0 size-full object-cover object-[50%_0%]" />
       </motion.div>
       <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] bg-[linear-gradient(to_top,rgba(43,30,20,0.92),rgba(43,30,20,0.62)_55%,transparent)]" />
       <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[linear-gradient(to_bottom,rgba(43,30,20,0.45),transparent)]" />
