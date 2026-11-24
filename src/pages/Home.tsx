@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { motion, useScroll, useSpring, useTransform, type MotionValue } from 'motion/react'
 import CardDeckCarousel, { type Slide } from '../components/ui/card-deck-carousel'
 import { Btn, Deco, Icon, WaNote } from '../components/Ui'
@@ -36,49 +36,52 @@ const LAND = '(min-aspect-ratio: 11/10) and (min-width: 640px)'
 const subscribe = (cb: () => void) => { const m = window.matchMedia(LAND); m.addEventListener('change', cb); return () => m.removeEventListener('change', cb) }
 const useLand = () => useSyncExternalStore(subscribe, () => window.matchMedia(LAND).matches, () => true)
 
-// o título é o mesmo em todas as telas; só a quebra de linha muda
-const heroLines = ['Destaque sua beleza', 'com cílios volumosos', <em key="n" className="italic text-ouro">ou mais naturais.</em>]
-
 function Hero() {
   const animated = useLand()
-  const rise = (delay: number) => ({ initial: animated ? { opacity: 0, y: 14 } : false, animate: { opacity: 1, y: 0 }, transition: { duration: 0.8, ease, delay } } as const)
+  const rise = (delay: number) => ({ initial: animated ? { opacity: 0, y: 14 } : false, animate: { opacity: 1, y: 0 }, transition: { duration: 0.9, ease, delay } } as const)
   return (
-    // celular/tablet em pé: logo, título e botão no topo, e o retrato embaixo, fundido ao fundo da foto; paisagem/desktop: texto à esquerda
-    // e a foto à direita, recortada numa forma em arco (#hero-forma) com um fio dourado por dentro
     <section className="relative flex min-h-svh flex-col overflow-hidden bg-areia text-cafe land:min-h-[max(100svh,780px)] land:overflow-visible land:bg-papel land:pt-[84px]">
-      {/* recorte em coordenadas relativas à caixa da foto: um quarto de elipse no canto superior esquerdo e a lateral reta até a base */}
+      <h1 className="sr-only">{brand.name} — {brand.role}</h1>
       <svg aria-hidden width="0" height="0" className="absolute">
         <clipPath id="hero-forma" clipPathUnits="objectBoundingBox"><path d="M0.5 0C0.224 0 0 0.246 0 0.55V1H1V0Z" /></clipPath>
       </svg>
       <div className="relative flex flex-1 flex-col">
-        {/* Zona de texto. Retrato: topo da tela. Paisagem: coluna esquerda (a foto fica na metade direita). */}
-        <div className="relative z-10 flex flex-col px-5 pb-8 pt-[96px] sm:px-8 land:absolute land:inset-y-0 land:left-0 land:w-[54%] land:justify-center land:pb-0 land:pl-[clamp(2rem,8.2vw,8rem)] land:pr-6 land:pt-0">
-          {/* no lugar da sobrancelha: a assinatura da Karina, igual à do catálogo */}
+        {/* Celular: conteúdo centralizado, foto abaixo. Paisagem/desktop: coluna esquerda */}
+        <div className="relative z-10 flex flex-col items-center px-5 pb-10 pt-[108px] text-center sm:px-8 land:absolute land:inset-y-0 land:left-0 land:w-[52%] land:items-start land:justify-center land:pb-0 land:pl-[clamp(2rem,8.2vw,8rem)] land:pr-6 land:pt-0 land:text-left">
           <motion.div {...rise(0.1)}>
-            <Img name="logo-ouro" sizes="(min-width: 1024px) 420px, 280px" alt={`${brand.name}, ${brand.role}`} loading="eager" className="h-auto w-[min(15rem,62vw)] sm:w-72 land:w-[min(24rem,30vw)]" />
+            <Img name="logo-ouro" sizes="(min-width: 1024px) 380px, 240px" alt={`${brand.name}, ${brand.role}`} loading="eager" className="h-auto w-[min(13rem,56vw)] sm:w-60 land:w-[min(22rem,27vw)]" />
           </motion.div>
-          <h1 className="mt-7 text-[min(46px,calc((100vw-2.5rem)/8.4))] sm:text-[min(72px,8.4vw)] land:mt-9 land:text-[clamp(32px,4.6vw,84px)]">
-            <Lines now still={!animated} delay={0.2} lines={heroLines} />
-          </h1>
-          <motion.p {...rise(0.9)} className="mt-3 font-script text-[clamp(28px,3.2vw,44px)] leading-none text-ouro">Você merece se cuidar.</motion.p>
-          <motion.p {...rise(1.05)} className="mt-4 max-w-md text-[16px] leading-relaxed text-cafe/85 land:max-w-[30rem] land:text-[clamp(15px,1.3vw,18px)]">Extensão de cílios Brasileiro, Egípcio, Luxo, Fox Eyes e Glamour, além de design de sobrancelhas. Marque seu horário!</motion.p>
-          <motion.div {...rise(1.2)} className="mt-7 flex flex-wrap items-center gap-x-8 gap-y-5 land:mt-9">
-            <a href={waUrl()} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[3.25rem] cursor-pointer items-center gap-2.5 rounded-full bg-ouro px-8 text-base font-semibold text-white transition-colors duration-200 hover:bg-ouro-escuro">
+          {/* linha ornamental fina abaixo da logo */}
+          <motion.div {...rise(0.4)} className="mt-5 flex items-center gap-3 text-dourado land:mt-6">
+            <span className="h-px w-10 bg-dourado/60 land:w-16" />
+            <Deco name="estrela-brilho" className="size-3.5 shrink-0" />
+            <span className="h-px w-10 bg-dourado/60 land:w-16" />
+          </motion.div>
+          <motion.p {...rise(0.65)} className="mt-5 font-script text-[clamp(28px,3vw,42px)] leading-none text-ouro land:mt-6">
+            Realce o seu olhar.
+          </motion.p>
+          <motion.div {...rise(1.0)} className="mt-9 land:mt-10">
+            <a href={waUrl()} target="_blank" rel="noopener noreferrer"
+              className="inline-flex min-h-[3.25rem] cursor-pointer items-center gap-2.5 rounded-full bg-ouro px-9 text-[15px] font-semibold tracking-wide text-white transition-colors duration-200 hover:bg-ouro-escuro">
               <Icon name="chat" className="size-5" />Agendar horário<WaNote />
             </a>
-            <Link to="/#procedimentos" className="group inline-flex items-center gap-3 text-[15px] font-medium text-cafe">
-              <span className="border-b border-cafe pb-1">Conheça os serviços</span>
-              <ArrowRight aria-hidden strokeWidth={1.6} className="size-5 transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
+          </motion.div>
+          {/* scroll hint sutil — desaparece assim que a página rola */}
+          <motion.div {...rise(1.3)} className="mt-10 hidden flex-col items-center gap-1.5 text-cafe/35 land:flex">
+            <span className="text-[10px] font-medium uppercase tracking-[0.22em]">Rolar</span>
+            <motion.span animate={{ y: [0, 5, 0] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+              className="h-px w-5 origin-top bg-cafe/35 rotate-90" />
           </motion.div>
         </div>
-        {/* foto: retrato embaixo do texto (celular, com o topo esmaecido para se fundir ao fundo) ou na forma em arco (paisagem) */}
+        {/* foto: retrato abaixo (celular, topo esmaecido) ou em arco na metade direita (desktop) */}
         <div className="relative mt-auto land:absolute land:inset-y-0 land:left-auto land:right-0 land:mt-0 land:w-1/2 land:[clip-path:url(#hero-forma)]">
-          <motion.div {...(animated ? { initial: { scale: 1.06 }, animate: { scale: 1 }, transition: { duration: 1.8, ease } } : {})} className="size-full [mask-image:linear-gradient(to_bottom,transparent,#000_28%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,#000_28%)] land:[mask-image:none] land:[-webkit-mask-image:none]">
-            <HeroPicture alt="Karina Fernandes segurando as pinças de extensão de cílios" className="block h-auto w-full land:absolute land:inset-0 land:size-full land:object-cover land:object-[44%_12%]" />
+          <motion.div {...(animated ? { initial: { scale: 1.06 }, animate: { scale: 1 }, transition: { duration: 2, ease } } : {})}
+            className="size-full [mask-image:linear-gradient(to_bottom,transparent,#000_28%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,#000_28%)] land:[mask-image:none] land:[-webkit-mask-image:none]">
+            <HeroPicture alt="Karina Fernandes" className="block h-auto w-full land:absolute land:inset-0 land:size-full land:object-cover land:object-[44%_12%]" />
           </motion.div>
-          {/* fio dourado em arco, recuado da borda; some para baixo e para a direita, onde passaria por cima do cabelo e do ombro */}
-          <svg aria-hidden viewBox="0 0 1 1" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 hidden size-full land:block" style={{ maskImage: 'radial-gradient(ellipse 120% 120% at 0% 0%, #000 45%, transparent 85%)', WebkitMaskImage: 'radial-gradient(ellipse 120% 120% at 0% 0%, #000 45%, transparent 85%)' }}>
+          {/* fio dourado em arco */}
+          <svg aria-hidden viewBox="0 0 1 1" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 hidden size-full land:block"
+            style={{ maskImage: 'radial-gradient(ellipse 120% 120% at 0% 0%, #000 45%, transparent 85%)', WebkitMaskImage: 'radial-gradient(ellipse 120% 120% at 0% 0%, #000 45%, transparent 85%)' }}>
             <path d="M0.06 1V0.56C0.06 0.26 0.22 0.035 0.52 0.035C0.78 0.035 0.97 0.2 0.97 0.5" fill="none" stroke="#c8a063" strokeWidth="1.3" vectorEffect="non-scaling-stroke" />
           </svg>
         </div>
