@@ -4,7 +4,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { motion, useScroll, useSpring, useTransform, type MotionValue } from 'motion/react'
 import CardDeckCarousel, { type Slide } from '../components/ui/card-deck-carousel'
 import { Btn, Deco, Icon, WaNote } from '../components/Ui'
-import { Lashes, Lines, Ornament, ease } from '../components/Motion'
+import { Lines, Ornament, ease } from '../components/Motion'
 import { HeroPicture, Img } from '../components/Img'
 import Faq from '../components/Faq'
 import { ScrollMarquee } from '../components/Scroll'
@@ -57,7 +57,7 @@ function Hero() {
             <Deco name="estrela-brilho" className="size-3.5 shrink-0" />
             <span className="h-px w-10 bg-dourado/60 land:w-16" />
           </motion.div>
-          <motion.p {...rise(0.65)} className="mt-5 font-script text-[clamp(28px,3vw,42px)] leading-none text-ouro land:mt-6">
+          <motion.p {...rise(0.65)} className="mt-6 font-script text-[clamp(46px,12vw,64px)] leading-[1.05] text-ouro land:mt-7 land:text-[clamp(56px,6vw,96px)]">
             Realce o seu olhar.
           </motion.p>
           <motion.div {...rise(1.0)} className="mt-9 land:mt-10">
@@ -65,12 +65,6 @@ function Hero() {
               className="inline-flex min-h-[3.25rem] cursor-pointer items-center gap-2.5 rounded-full bg-ouro px-9 text-[15px] font-semibold tracking-wide text-white transition-colors duration-200 hover:bg-ouro-escuro">
               <Icon name="chat" className="size-5" />Agendar horário<WaNote />
             </a>
-          </motion.div>
-          {/* scroll hint sutil — desaparece assim que a página rola */}
-          <motion.div {...rise(1.3)} className="mt-10 hidden flex-col items-center gap-1.5 text-cafe/35 land:flex">
-            <span className="text-[10px] font-medium uppercase tracking-[0.22em]">Rolar</span>
-            <motion.span animate={{ y: [0, 5, 0] }} transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-              className="h-px w-5 origin-top bg-cafe/35 rotate-90" />
           </motion.div>
         </div>
         {/* foto: retrato abaixo (celular, topo esmaecido) ou em arco na metade direita (desktop) */}
@@ -92,15 +86,11 @@ function Hero() {
 
 function Differentials() {
   return (
-    // logo abaixo do hero: só a lista de diferenciais, sem título; no desktop, o olho animado ocupa a coluna da direita
-    <section className="overflow-hidden bg-papel px-5 py-10 lg:px-12 lg:py-16">
+    <section className="overflow-hidden bg-papel px-5 py-16 lg:px-12 lg:py-28">
       <h2 className="sr-only">Diferenciais</h2>
-      <div className={`${wrap} grid items-center gap-16 lg:grid-cols-[minmax(0,590px)_1fr]`}>
-          <ul>
-            {differentials.map((d) => <Differential key={d.title} {...d} />)}
-          </ul>
-          <LashShowcase />
-      </div>
+      <ul className={`${wrap} grid gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10`}>
+        {differentials.map((d) => <Differential key={d.title} {...d} />)}
+      </ul>
     </section>
   )
 }
@@ -109,93 +99,28 @@ function Differentials() {
 // a divisória se desenha, o ícone gira até o lugar e o texto desliza da direita
 function Differential({ icon, title, text }: { icon: string; title: string; text: string }) {
   const ref = useRef<HTMLLIElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 100%', 'start 60%'] })
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 100%', 'start 65%'] })
   const p = useSpring(scrollYProgress, smooth)
-  const line = useTransform(p, [0.1, 1], [0, 1])
-  const iconIn = useTransform(p, [0, 0.6], [0, 1])
-  const iconScale = useTransform(iconIn, [0, 1], [0.4, 1])
-  const iconRotate = useTransform(iconIn, [0, 1], [-30, 0])
-  const textIn = useTransform(p, [0.2, 0.85], [0, 1])
-  const textX = useTransform(textIn, [0, 1], [48, 0])
-  const textBlur = useTransform(textIn, [0, 1], ['blur(6px)', 'blur(0px)'])
+  const inView = useTransform(p, [0, 1], [0, 1])
+  const y = useTransform(inView, [0, 1], [24, 0])
   return (
-    <li ref={ref} className="group relative flex items-start gap-5 py-7 first:pt-0 lg:gap-6">
-      <motion.span aria-hidden style={{ scaleX: line }} className="absolute inset-x-0 bottom-0 h-px origin-left bg-cafe/15" />
-      {/* ícone de biblioteca (Lucide), em linha fina na cor da marca */}
-      <motion.span style={{ opacity: iconIn, scale: iconScale, rotate: iconRotate }} className="mt-0.5 shrink-0 text-ouro">
-        <span className="block transition-transform duration-300 group-hover:scale-110"><Icon name={icon} className="size-9 lg:size-10" /></span>
-      </motion.span>
-      <motion.div style={{ opacity: textIn, x: textX, filter: textBlur }} className="pt-1">
-        <h3 className="font-display text-[22px] font-semibold leading-tight tracking-tight">{title}</h3>
-        <p className="mt-1.5 max-w-[44ch] text-[15px] leading-relaxed text-cinza">{text}</p>
-      </motion.div>
-    </li>
+    <motion.li ref={ref} style={{ opacity: inView, y }} className="flex flex-col items-center text-center">
+      <span className="text-ouro"><Icon name={icon} className="size-9" /></span>
+      <h3 className="mt-5 font-display text-[24px] font-semibold leading-tight tracking-tight">{title}</h3>
+      <p className="mt-2 max-w-[30ch] text-[15px] leading-relaxed text-cinza">{text}</p>
+    </motion.li>
   )
 }
-
-// só no desktop: o olho nasce cílio a cílio ao entrar na tela e depois flutua devagar, com brilhos pulsando ao redor
-function LashShowcase() {
-  const sparkles = [
-    { cls: 'left-[14%] top-[18%] size-7', delay: 0 },
-    { cls: 'right-[12%] top-[26%] size-5', delay: 0.8 },
-    { cls: 'bottom-[20%] right-[22%] size-6', delay: 1.6 },
-  ]
-  return (
-    <div aria-hidden className="relative hidden aspect-square w-full max-w-[520px] justify-self-end lg:block">
-      {/* fundo: círculo creme com o padrão de cílios, girando bem devagar */}
-      <motion.div animate={{ rotate: 360 }} transition={{ duration: 90, repeat: Infinity, ease: 'linear' }} className="absolute inset-0 overflow-hidden rounded-full bg-creme">
-        <span className="absolute inset-0 bg-dourado opacity-50" style={{ maskImage: 'url(/assets/svg/cilios-padrao.svg)', WebkitMaskImage: 'url(/assets/svg/cilios-padrao.svg)', maskSize: '160px', WebkitMaskSize: '160px' }} />
-      </motion.div>
-      {/* anel tracejado que gira no sentido contrário */}
-      <motion.svg viewBox="0 0 100 100" animate={{ rotate: -360 }} transition={{ duration: 60, repeat: Infinity, ease: 'linear' }} className="absolute -inset-4 text-ouro/40">
-        <circle cx="50" cy="50" r="49" fill="none" stroke="currentColor" strokeWidth="0.3" strokeDasharray="1 2" />
-      </motion.svg>
-      <motion.div animate={{ y: [0, -10, 0], rotate: [-2, 1, -2] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }} className="absolute inset-x-[10%] top-1/2 -translate-y-1/2">
-        <Lashes className="w-full text-ouro" />
-      </motion.div>
-      {sparkles.map((s) => (
-        <motion.span key={s.cls} animate={{ scale: [0.6, 1, 0.6], opacity: [0.4, 1, 0.4], rotate: [0, 90, 0] }} transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: s.delay }} className={`absolute text-dourado ${s.cls}`}>
-          <Deco name="estrela-brilho" className="block size-full" />
-        </motion.span>
-      ))}
-    </div>
-  )
-}
-
-// chamada para as informações e restrições, logo antes do FAQ: editorial, só tipografia e linhas finas.
-// O texto completo fica em /informacoes.
-const policyFigures = [
-  { big: '2 a 3 h', text: 'de duração média: venha sem compromissos marcados logo depois.' },
-  { big: '5', text: 'restrições para conferir antes de agendar o seu horário.' },
-]
 
 function BookingPolicy() {
   return (
-    <section className="px-5 pt-20 lg:px-12 lg:pt-32">
-      <div className={wrap}>
-        <div className="grid gap-10 border-t border-cafe/15 pt-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20 lg:pt-12">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cinza">Antes de agendar</p>
-            <h2 className="mt-5 text-[44px] sm:text-6xl"><Lines lines={['Informações e', 'restrições']} /></h2>
-          </div>
-          <dl>
-            {policyFigures.map((f, i) => (
-              <motion.div key={f.big} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-40px' }} transition={{ duration: 0.8, ease, delay: i * 0.12 }}
-                className="grid gap-1 border-b border-cafe/15 py-6 first:pt-0 sm:grid-cols-[15rem_1fr] sm:items-baseline sm:gap-8">
-                <dt className="font-display text-[56px] font-medium leading-none text-ouro sm:text-[72px]">{f.big}</dt>
-                <dd className="max-w-[34ch] text-[15px] leading-relaxed text-cinza sm:text-base">{f.text}</dd>
-              </motion.div>
-            ))}
-          </dl>
-        </div>
-        {/* o link é a própria linha: texto grande, seta que gira e um traço na cor da marca que corre por baixo no hover */}
-        <Link to="/informacoes" className="group relative mt-10 flex items-center justify-between gap-6 py-5 lg:mt-14">
-          <span className="font-display text-[28px] font-semibold leading-tight tracking-tight sm:text-[40px]">Ver informações completas</span>
-          <span className="grid size-12 shrink-0 place-items-center rounded-full border border-cafe/30 transition duration-300 group-hover:border-ouro group-hover:bg-ouro group-hover:text-white sm:size-16">
-            <ArrowUpRight aria-hidden strokeWidth={1.6} className="size-6 transition-transform duration-300 group-hover:rotate-45 sm:size-7" />
-          </span>
-          <span aria-hidden className="absolute inset-x-0 bottom-0 h-px bg-cafe/15" />
-          <span aria-hidden className="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-ouro transition-transform duration-500 group-hover:scale-x-100" />
+    <section className="px-5 pt-20 text-center lg:px-12 lg:pt-32">
+      <div className={`${wrap} flex flex-col items-center`}>
+        <h2 className="text-[40px] sm:text-6xl"><Lines lines={['Antes de agendar']} /></h2>
+        <p className="mt-5 max-w-md text-cinza">O atendimento leva de 2 a 3 horas. Confira as restrições antes de marcar o seu horário.</p>
+        <Link to="/informacoes" className="group mt-8 inline-flex items-center gap-3 text-[15px] font-medium text-cafe">
+          <span className="border-b border-cafe pb-1">Ver informações completas</span>
+          <ArrowUpRight aria-hidden strokeWidth={1.6} className="size-5 transition-transform duration-300 group-hover:rotate-45" />
         </Link>
       </div>
     </section>
