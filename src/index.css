@@ -1,0 +1,37 @@
+@import "tailwindcss";
+@theme {
+  --font-sans: "Jost", system-ui, sans-serif;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-script: "Allura", cursive;
+  --color-dourado: #c8a063; /* dourado dos fios, linhas e ornamentos */
+  --color-ouro: #8b6a3c; /* cor da marca nos botões, fundos e títulos de destaque (o marrom-dourado do catálogo) */
+  --color-ouro-escuro: #6e5230; /* hover dos botões: a cor da marca um tom mais escura */
+  --color-areia: #ebdece; /* tom do fundo da foto da Karina: o hero em celular se funde com ela */
+  --color-creme: #f6ece1; /* fundo creme das seções de destaque */
+  --color-papel: #fbf7f2; /* fundo base do site */
+  --color-fio: #8b6a3c; /* cor dos ornamentos desenhados */
+  --color-cafe: #3d2c1d; /* texto principal */
+  --color-cinza: #6b5a4a; /* texto secundário */
+}
+/* paisagem: usa a imagem larga do hero (celular deitado, tablet, desktop) */
+@custom-variant land (@media (min-aspect-ratio: 11/10) and (min-width: 640px));
+/* telas baixas (celular deitado): o texto sobe para o topo em vez de ficar centralizado abaixo da dobra */
+@custom-variant short (@media (max-height: 600px));
+html { scroll-behavior: smooth; scrollbar-width: none; overflow-x: clip; scroll-padding-top: 88px; }
+html::-webkit-scrollbar { display: none; }
+/* navegadores sem `overflow-x: clip`: hidden segura a largura (o sticky do desktop só existe em telas largas e navegadores atuais) */
+@supports not (overflow-x: clip) { html, body { overflow-x: hidden; } }
+body { overflow-x: clip; max-width: 100%; font-family: var(--font-sans); color: var(--color-cafe); background: var(--color-papel); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; font-variant-numeric: lining-nums; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.01em; line-height: 1.02; }
+.font-script { font-family: var(--font-script); font-weight: 400; letter-spacing: 0; }
+::selection { background: #8b6a3c; color: #fff; }
+/* foco visível em qualquer fundo: contorno na cor do texto + halo claro (aparece no dourado e some no creme) */
+:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; box-shadow: 0 0 0 5px rgb(251 247 242 / 0.9); }
+/* resposta do FAQ: abre e fecha acompanhando a altura real do conteúdo (variável do Radix) */
+@keyframes acc-down { from { height: 0; opacity: 0 } to { height: var(--radix-accordion-content-height); opacity: 1 } }
+@keyframes acc-up { from { height: var(--radix-accordion-content-height); opacity: 1 } to { height: 0; opacity: 0 } }
+.acc[data-state="open"] { animation: acc-down 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+.acc[data-state="closed"] { animation: acc-up 0.28s cubic-bezier(0.22, 1, 0.36, 1); }
+/* sem regra de prefers-reduced-motion: decisão da cliente é manter todas as animações */
+/* impressão: tudo visível e no lugar, mesmo o que ainda não animou */
+@media print { * { opacity: 1 !important; transform: none !important; clip-path: none !important; } }
