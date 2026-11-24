@@ -91,26 +91,25 @@ const useLand = () => useSyncExternalStore(subscribe, () => window.matchMedia(LA
 function Hero() {
   const animated = useLand()
   const rise = (delay: number) => ({ initial: animated ? { opacity: 0, y: 14 } : false, animate: { opacity: 1, y: 0 }, transition: { duration: 0.9, ease, delay } } as const)
-    const fadeV = '[mask-image:linear-gradient(to_bottom,transparent,#000_26%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,#000_26%)]'
-  const fadeH = 'land:[mask-image:linear-gradient(to_right,transparent,#000_18%)] land:[-webkit-mask-image:linear-gradient(to_right,transparent,#000_18%)]'
   return (
     <>
-    <section className="relative flex min-h-[max(100svh,720px)] flex-col overflow-hidden bg-[linear-gradient(to_right,#e2d1c0,#ece0d2_50%,#f3e9df)] text-cafe land:hidden">
-      {/* foto de fundo colada na base da seção (celular) ou na metade direita (paisagem); o fundo dela é o tom da seção, então a emenda some */}
-      <motion.div {...(animated ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 1.6, ease } } : {})}
-        className={`${fadeV} ${fadeH} absolute inset-x-0 bottom-0 h-[60%] land:inset-y-0 land:left-auto land:right-0 land:h-auto land:w-[66%]`}>
-        <HeroPicture alt="Karina Fernandes" pictureClassName="block size-full" className="absolute inset-0 size-full object-cover object-[46%_6%] land:object-[50%_8%]" />
+    {/* celular: foto em tela cheia (exatamente a altura da tela, sem rolagem) com o texto embaixo sobre um degradê escuro */}
+    <section className="relative h-svh overflow-hidden bg-cafe text-papel land:hidden">
+      <motion.div {...(animated ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 1.4, ease } } : {})} className="absolute inset-x-0 top-0 aspect-[3/4] [mask-image:linear-gradient(to_bottom,#000_72%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,#000_72%,transparent)]">
+        <HeroPicture alt="Karina Fernandes" pictureClassName="block size-full" className="absolute inset-0 size-full object-cover object-[50%_0%]" />
       </motion.div>
-      <div className="relative z-10 flex flex-col items-center px-6 pt-[104px] text-center sm:px-10 land:absolute land:inset-y-0 land:left-0 land:w-[56%] land:items-start land:justify-center land:pl-[clamp(2rem,8vw,8rem)] land:pr-6 land:pt-[84px] land:text-left">
-        <motion.p {...rise(0.1)} className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.34em] text-ouro">
-          <span className="h-px w-8 bg-ouro/50 land:w-12" />{brand.role}<span className="h-px w-8 bg-ouro/50 land:hidden" />
+      <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] bg-[linear-gradient(to_top,rgba(43,30,20,0.92),rgba(43,30,20,0.62)_55%,transparent)]" />
+      <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[linear-gradient(to_bottom,rgba(43,30,20,0.45),transparent)]" />
+      <div className="absolute inset-x-0 bottom-0 flex flex-col items-center px-6 pb-[max(2.5rem,env(safe-area-inset-bottom))] text-center">
+        <motion.p {...rise(0.1)} className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.34em] text-dourado">
+          <span className="h-px w-8 bg-dourado/60" />{brand.role}<span className="h-px w-8 bg-dourado/60" />
         </motion.p>
-        <h1 className="mt-4 font-display text-[clamp(46px,13vw,68px)] font-bold leading-[1] tracking-[-0.01em] land:mt-6 land:text-[clamp(64px,7vw,120px)]">
+        <h1 className="mt-4 font-display text-[clamp(44px,13vw,64px)] font-bold leading-[1] tracking-[-0.01em]">
           <span className="sr-only">{brand.name} — {brand.role}. </span>
-          <motion.span {...rise(0.25)} className="block text-cafe">Um olhar feito</motion.span>
-          <motion.span {...rise(0.45)} className="-mt-1 block font-script text-[1.25em] font-normal leading-[1.1] tracking-normal text-ouro">sob medida</motion.span>
+          <motion.span {...rise(0.25)} className="block text-papel">Um olhar feito</motion.span>
+          <motion.span {...rise(0.45)} className="-mt-1 block font-script text-[1.25em] font-normal leading-[1.1] tracking-normal text-dourado">sob medida</motion.span>
         </h1>
-        <motion.p {...rise(0.7)} className="mt-4 max-w-[30ch] text-[15px] leading-snug text-cafe/80 land:mt-6 land:max-w-[36ch] land:text-[19px]">
+        <motion.p {...rise(0.7)} className="mt-4 max-w-[30ch] text-[15px] leading-snug text-papel/85">
           Cílios e sobrancelhas com atendimento individual e hora marcada.
         </motion.p>
       </div>
@@ -145,7 +144,7 @@ function HeroDesktop() {
         </div>
         <div className="absolute inset-y-0 right-0 w-1/2 [clip-path:url(#hero-forma)]">
           <motion.div {...(animated ? { initial: { scale: 1.06 }, animate: { scale: 1 }, transition: { duration: 2, ease } } : {})} className="relative size-full overflow-hidden bg-areia">
-            <HeroPicture alt="Karina Fernandes" className="absolute inset-0 size-full object-cover object-[50%_12%]" />
+            <HeroPicture alt="Karina Fernandes" className="absolute inset-0 size-full object-cover object-[50%_28%]" />
           </motion.div>
           <svg aria-hidden viewBox="0 0 1 1" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 size-full"
             style={{ maskImage: 'radial-gradient(ellipse 120% 120% at 0% 0%, #000 45%, transparent 85%)', WebkitMaskImage: 'radial-gradient(ellipse 120% 120% at 0% 0%, #000 45%, transparent 85%)' }}>
@@ -256,7 +255,7 @@ function About() {
             <Deco name="moldura-arco" fit className="size-full" />
           </span>
           <div className="relative aspect-[4/5] overflow-hidden rounded-t-[999px] rounded-b-[28px] bg-areia">
-            <Img name="karina-pincas" sizes="(min-width: 1024px) 45vw, 90vw" alt={`${brand.name} segurando pinças douradas de extensão de cílios`} className="absolute inset-0 size-full object-cover object-[50%_30%]" />
+            <Img name="karina-pincas" sizes="(min-width: 1024px) 45vw, 90vw" alt={`${brand.name} segurando pinças douradas de extensão de cílios`} className="absolute inset-0 size-full object-cover object-[50%_0%]" />
           </div>
           <motion.div style={{ rotate: spin }} className="absolute -bottom-7 -left-2 size-28 rounded-full bg-papel p-2 text-ouro sm:-left-6 sm:size-32 lg:-left-8">
             <Seal />

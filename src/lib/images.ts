@@ -16,7 +16,7 @@ export type ImageInfo = {
 const foto = (slug: string, width: number, height: number): ImageInfo => ({ base: `/assets/servico-${slug}`, ext: 'jpeg', width, height, widths: [480, 768] })
 
 export const images = {
-  'karina-retrato': { base: '/karina-retrato', ext: 'jpeg', width: 1550, height: 1422, widths: [720, 1080, 1550] },
+  'karina-retrato': { base: '/karina-retrato', ext: 'jpeg', width: 1200, height: 1600, widths: [480, 720, 1080, 1200] },
   'karina-pincas': { base: '/karina-pincas', ext: 'jpeg', width: 1200, height: 1600, widths: [720, 1080] },
   'servico-brasileiro': foto('brasileiro', 660, 660),
   'servico-egipcio': foto('egipcio', 660, 660),

@@ -9,11 +9,11 @@ export const contact = {
   instagram: '', // PREENCHER: usuário do Instagram, sem @
   address: '', // PREENCHER: endereço completo (mostra o mapa e o endereço no rodapé)
   mapsUrl: '', // PREENCHER: link do Google Maps (opcional)
-  hours: 'Seg a Sex, 8h às 12h · Sáb, 8h às 20h',
+  hours: 'Seg a Sex, 8h às 20h · Sáb, 9h às 16h',
 }
 export const schedule = [
-  { days: 'Seg a Sex', time: '8:00 às 12:00' },
-  { days: 'Sábado', time: '8:00 às 20:00' },
+  { days: 'Seg a Sex', time: '8:00 às 20:00' },
+  { days: 'Sábado', time: '9:00 às 16:00' },
 ]
 export const payments = [
   { icon: 'pix', label: 'Pix' },
@@ -104,7 +104,7 @@ export const policiesThanks = 'Sua beleza, nosso propósito.'
 
 export const faq = [
   { q: 'Como agendar?', a: 'Pelo botão de WhatsApp do site. Informe a técnica desejada e combinamos o melhor dia e horário.' },
-  { q: 'Qual o horário de atendimento?', a: 'De segunda a sexta, das 8h às 12h, e aos sábados, das 8h às 20h.' },
+  { q: 'Qual o horário de atendimento?', a: 'De segunda a sexta, das 8h às 20h, e aos sábados, das 9h às 16h.' },
   { q: 'Quanto tempo dura o procedimento?', a: 'Em média de 2 a 3 horas. Por isso, venha sem compromissos marcados logo depois.' },
   { q: 'Qual a diferença entre as técnicas?', a: 'Brasileiro (fio em Y) é um volume moderado e equilibrado. Egípcio é o mais delicado, com efeito arqueado. Luxo (5D) deixa os cílios mais cheios. Fox Eyes alonga o canto externo do olhar. Glamour (fio U) é bem cheio e intenso. Se tiver dúvida, chame no WhatsApp que ajudo você a escolher.' },
   { q: 'O que é aplicação e manutenção?', a: 'Aplicação é o valor da colocação dos cílios; manutenção é o valor para repor e manter o volume depois. Para saber o melhor prazo da sua manutenção, pergunte no WhatsApp.' },
