@@ -1,6 +1,6 @@
 // Conteúdo do site, tirado do catálogo da Karina Fernandes (PDF). Campos marcados com "PREENCHER" não constam
 // no catálogo e ficam ocultos na página enquanto estiverem vazios — nada é inventado.
-export const WHATSAPP = '' // PREENCHER: DDI 55 + DDD + número, só dígitos (ex.: '5511999999999'). Vazio: o botão abre o WhatsApp para escolher o contato.
+export const WHATSAPP = '553597549665' // DDI 55 + DDD 35 + número (só dígitos)
 export const brand = {
   name: 'Karina Fernandes',
   role: 'Lash Designer',
@@ -63,6 +63,8 @@ export const procedures: Procedure[] = [
     description: 'Beleza na medida certa: o design simples realça seu olhar de forma natural, leve e elegante.', detail: 'Perfeito para quem ama discrição sem perder o charme.' },
   { id: 7, name: 'Design com henna', group: 'sobrancelhas', price: 40, photo: '/assets/servico-henna-768.webp', alt: 'Cliente com design de sobrancelhas com henna',
     description: 'A henna proporciona um efeito de maquiagem temporária, tingindo tanto os fios quanto a pele.', detail: 'Garante um olhar mais marcante e definido.' },
+  { id: 8, name: 'Brow', group: 'sobrancelhas', photo: '/assets/servico-brow-768.webp', alt: 'Olho com sobrancelha e cílios alongados',
+    description: '' },
 ]
 // serviços avulsos, sem foto no catálogo
 export const extras = [

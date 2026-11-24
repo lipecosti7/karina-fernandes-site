@@ -1,8 +1,7 @@
-import { useRef, useSyncExternalStore } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowUpRight, MapPin } from 'lucide-react'
+import { ArrowUpRight, ChevronLeft, ChevronRight, MapPin, Maximize2, X } from 'lucide-react'
 import { motion, useScroll, useSpring, useTransform, type MotionValue } from 'motion/react'
-import CardDeckCarousel, { type Slide } from '../components/ui/card-deck-carousel'
 import { Btn, Deco, Icon, WaNote } from '../components/Ui'
 import { Lines, Ornament, ease } from '../components/Motion'
 import { HeroPicture, Img } from '../components/Img'
@@ -13,21 +12,74 @@ import { brand, brl, contact, differentials, extras, priceLabel, procedures, ste
 
 const wrap = 'mx-auto max-w-[1200px]'
 const smooth = { stiffness: 70, damping: 24, mass: 0.5 }
-// fotos reais dos serviços (recortadas do catálogo; WebP otimizado em public/assets, gerado por `npm run images`)
-const deckSlides: Slide[] = procedures.map((p) => ({ image: p.photo, title: p.name, price: priceLabel(p), alt: p.alt }))
 
-// catálogo: cartões empilhados (arraste, use as setas ou os botões). Título, descrição e valor ficam sobre a foto;
-// o botão de agendar acompanha o cartão do topo na faixa de controles
-const subscribeWide = (cb: () => void) => { const m = window.matchMedia('(min-width: 1024px)'); m.addEventListener('change', cb); return () => m.removeEventListener('change', cb) }
-function ProcedureDeck() {
-  // desktop: a pilha abre em leque para os lados; celular: pilha reta e compacta
-  const wide = useSyncExternalStore(subscribeWide, () => window.matchMedia('(min-width: 1024px)').matches, () => false)
+// larguras geradas por scripts/optimize-servicos.mjs para cada foto (as três sem arquivo novo só têm até 768)
+const photoWidths: Record<string, number[]> = { 'servico-luxo': [480, 768, 1080, 1440], 'servico-brow': [480, 768, 1080], 'servico-fox-eyes': [480, 768, 1080], 'servico-egipcio': [480, 768], 'servico-glamour': [480, 768] }
+function ServicePhoto({ photo, alt, className }: { photo: string; alt: string; className: string }) {
+  const base = photo.replace(/-768.webp$/, '')
+  const ws = photoWidths[base.split('/').pop()!] ?? [480, 768]
+  const set = (ext: string) => ws.map((w) => `${base}-${w}.${ext} ${w}w`).join(', ')
+  const sizes = '(min-width: 1024px) 480px, 92vw'
   return (
-    <div className="mt-2 lg:mt-6">
-      <CardDeckCarousel slides={deckSlides} aspect="3 / 4" scatter={wide ? 11 : 7} spread={wide ? 120 : 0} autoplay={0} height="min(125svh, 1000px)" cardWidth="min(86vw, 460px)" showCount={false}
-        style={{ height: 'auto' }} background="transparent" ink="var(--color-cafe)" ariaLabel="Serviços"
-        meta={(i) => <div><Btn href={waUrl(procedures[i].name)} className="w-full">Agendar<span className="sr-only"> {procedures[i].name}</span><WaNote /></Btn></div>} />
-    </div>
+    <picture>
+      <source type="image/avif" srcSet={set('avif')} sizes={sizes} />
+      <source type="image/webp" srcSet={set('webp')} sizes={sizes} />
+      <img src={`${base}-${ws[ws.length - 1]}.webp`} alt={alt} loading="lazy" decoding="async" className={className} />
+    </picture>
+  )
+}
+
+// catálogo: lista editorial. Foto grande (toque para ver inteira em tela cheia), nome, valores e botão de agendar
+function ProcedureList() {
+  const [open, setOpen] = useState<number | null>(null)
+  useEffect(() => {
+    if (open === null) return
+    const k = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(null)
+      else if (e.key === 'ArrowRight') setOpen((i) => (i === null ? i : (i + 1) % procedures.length))
+      else if (e.key === 'ArrowLeft') setOpen((i) => (i === null ? i : (i - 1 + procedures.length) % procedures.length))
+    }
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', k)
+    return () => { window.removeEventListener('keydown', k); document.body.style.overflow = prev }
+  }, [open])
+  const cur = open === null ? null : procedures[open]
+  const nav = 'absolute top-1/2 grid size-11 -translate-y-1/2 cursor-pointer place-items-center rounded-full border border-white/35 bg-white/10 text-white transition-colors hover:bg-white/25'
+  return (
+    <>
+      <ol className="mx-auto mt-14 flex max-w-[1040px] flex-col gap-16 lg:mt-20 lg:gap-24">
+        {procedures.map((p, i) => (
+          <motion.li key={p.id} initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-12% 0px' }} transition={{ duration: 0.8, ease }}
+            className={`flex flex-col gap-6 lg:items-center lg:gap-16 ${i % 2 ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}>
+            <button type="button" onClick={() => setOpen(i)} aria-label={`Ver foto de ${p.name} em tela cheia`}
+              className="group relative block w-full cursor-zoom-in overflow-hidden rounded-[22px] bg-areia shadow-[0_26px_50px_-30px_rgba(61,44,29,0.5)] lg:w-[46%] lg:shrink-0">
+              <ServicePhoto photo={p.photo} alt={p.alt} className="aspect-[4/5] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+              <span aria-hidden className="absolute bottom-3 right-3 grid size-10 place-items-center rounded-full bg-papel/90 text-cafe"><Maximize2 className="size-[18px]" /></span>
+            </button>
+            <div className="lg:flex-1">
+              <h3 className="text-[40px] leading-[1.02] sm:text-5xl">{p.name}</h3>
+              <p className="mt-4 flex flex-wrap items-baseline gap-x-5 gap-y-1 border-t border-cafe/15 pt-5 font-display text-[24px] font-semibold text-cafe">
+                {p.maintenance
+                  ? <><span>Aplicação {brl(p.price ?? 0)}</span><span className="text-cinza">Manutenção {brl(p.maintenance)}</span></>
+                  : <span>{p.price === undefined ? 'Valor sob consulta' : brl(p.price)}</span>}
+              </p>
+              <div className="mt-6"><Btn href={waUrl(p.name)}>Agendar<span className="sr-only"> {p.name}</span><WaNote /></Btn></div>
+            </div>
+          </motion.li>
+        ))}
+      </ol>
+      {cur && open !== null ? (
+        <div role="dialog" aria-modal="true" aria-label={cur.name} onClick={() => setOpen(null)}
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-[#1e140a]/95 px-4 pb-5 pt-14">
+          <button type="button" autoFocus aria-label="Fechar" onClick={() => setOpen(null)} className={`${nav} !top-5 !right-4 !translate-y-0`}><X className="size-5" /></button>
+          <button type="button" aria-label="Foto anterior" onClick={(e) => { e.stopPropagation(); setOpen((open - 1 + procedures.length) % procedures.length) }} className={`${nav} left-3`}><ChevronLeft className="size-5" /></button>
+          <img src={cur.photo.replace('-768.webp', '.jpeg')} alt={cur.alt} onClick={(e) => e.stopPropagation()} className="max-h-[calc(100svh-150px)] max-w-full rounded-xl object-contain shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]" />
+          <p onClick={(e) => e.stopPropagation()} className="text-center font-display text-2xl font-semibold text-white">{cur.name}<span className="mt-1 block font-sans text-sm font-normal text-white/75">{priceLabel(cur).replace('\n', ' · ')}</span></p>
+          <button type="button" aria-label="Próxima foto" onClick={(e) => { e.stopPropagation(); setOpen((open + 1) % procedures.length) }} className={`${nav} right-3`}><ChevronRight className="size-5" /></button>
+        </div>
+      ) : null}
+    </>
   )
 }
 
@@ -39,46 +91,27 @@ const useLand = () => useSyncExternalStore(subscribe, () => window.matchMedia(LA
 function Hero() {
   const animated = useLand()
   const rise = (delay: number) => ({ initial: animated ? { opacity: 0, y: 14 } : false, animate: { opacity: 1, y: 0 }, transition: { duration: 0.9, ease, delay } } as const)
+    const fadeV = '[mask-image:linear-gradient(to_bottom,transparent,#000_26%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,#000_26%)]'
+  const fadeH = 'land:[mask-image:linear-gradient(to_right,transparent,#000_18%)] land:[-webkit-mask-image:linear-gradient(to_right,transparent,#000_18%)]'
   return (
-    <section className="relative flex min-h-svh flex-col overflow-hidden bg-papel text-cafe land:min-h-[max(100svh,780px)] land:overflow-visible land:pt-[84px]">
-      <h1 className="sr-only">{brand.name} — {brand.role}</h1>
-      <svg aria-hidden width="0" height="0" className="absolute">
-        <clipPath id="hero-forma" clipPathUnits="objectBoundingBox"><path d="M0.5 0C0.224 0 0 0.246 0 0.55V1H1V0Z" /></clipPath>
-      </svg>
-      <div className="relative flex flex-1 flex-col">
-        <div className="relative z-10 flex flex-col items-center px-5 pt-[104px] text-center sm:px-8 land:absolute land:inset-y-0 land:left-0 land:w-[52%] land:items-start land:justify-center land:pl-[clamp(2rem,8.2vw,8rem)] land:pr-6 land:pt-0 land:text-left">
-          <motion.div {...rise(0.1)}>
-            <Img name="logo-ouro" sizes="(min-width: 1024px) 380px, 240px" alt={`${brand.name}, ${brand.role}`} loading="eager" className="h-auto w-[min(13rem,56vw)] sm:w-60 land:w-[min(22rem,27vw)]" />
-          </motion.div>
-          <motion.div {...rise(0.4)} className="mt-5 flex items-center gap-3 text-dourado land:mt-6">
-            <span className="h-px w-10 bg-dourado/60 land:w-16" />
-            <Deco name="estrela-brilho" className="size-3.5 shrink-0" />
-            <span className="h-px w-10 bg-dourado/60 land:w-16" />
-          </motion.div>
-          <motion.p {...rise(0.65)} className="mt-6 font-script text-[clamp(46px,12vw,64px)] leading-[1.05] text-ouro land:mt-7 land:text-[clamp(56px,6vw,96px)]">
-            Realce o seu olhar.
-          </motion.p>
-          <motion.div {...rise(1.0)} className="mt-8 land:mt-10">
-            <a href={waUrl()} target="_blank" rel="noopener noreferrer"
-              className="inline-flex min-h-[3.25rem] cursor-pointer items-center gap-2.5 rounded-full bg-ouro px-9 text-[15px] font-semibold tracking-wide text-white transition-colors duration-200 hover:bg-ouro-escuro">
-              <Icon name="chat" className="size-5" />Agendar horário<WaNote />
-            </a>
-          </motion.div>
-        </div>
-        {/* celular: retrato em arco com moldura fina deslocada (sem gradiente); desktop: forma em arco na metade direita */}
-        <div className="relative mx-auto mb-14 mt-14 w-[min(76vw,330px)] land:absolute land:inset-y-0 land:left-auto land:right-0 land:m-0 land:w-1/2 land:[clip-path:url(#hero-forma)]">
-          <span aria-hidden className="pointer-events-none absolute -inset-x-3 -bottom-3 -top-3 translate-x-3 translate-y-3 text-dourado land:hidden">
-            <Deco name="moldura-arco" fit className="size-full" />
-          </span>
-          <motion.div {...(animated ? { initial: { scale: 1.06 }, animate: { scale: 1 }, transition: { duration: 2, ease } } : {})}
-            className="relative aspect-[4/5] overflow-hidden rounded-t-[999px] rounded-b-[20px] bg-areia land:aspect-auto land:size-full land:rounded-none">
-            <HeroPicture alt="Karina Fernandes" className="absolute inset-0 size-full object-cover object-[44%_12%]" />
-          </motion.div>
-          <svg aria-hidden viewBox="0 0 1 1" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 hidden size-full land:block"
-            style={{ maskImage: 'radial-gradient(ellipse 120% 120% at 0% 0%, #000 45%, transparent 85%)', WebkitMaskImage: 'radial-gradient(ellipse 120% 120% at 0% 0%, #000 45%, transparent 85%)' }}>
-            <path d="M0.06 1V0.56C0.06 0.26 0.22 0.035 0.52 0.035C0.78 0.035 0.97 0.2 0.97 0.5" fill="none" stroke="#c8a063" strokeWidth="1.3" vectorEffect="non-scaling-stroke" />
-          </svg>
-        </div>
+    <section className="relative flex min-h-[max(100svh,720px)] flex-col overflow-hidden bg-[linear-gradient(to_right,#e2d1c0,#ece0d2_50%,#f3e9df)] text-cafe land:min-h-[max(100svh,780px)] land:bg-none land:bg-areia">
+      {/* foto de fundo colada na base da seção (celular) ou na metade direita (paisagem); o fundo dela é o tom da seção, então a emenda some */}
+      <motion.div {...(animated ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 1.6, ease } } : {})}
+        className={`${fadeV} ${fadeH} absolute inset-x-0 bottom-0 h-[60%] land:inset-y-0 land:left-auto land:right-0 land:h-auto land:w-[62%]`}>
+        <HeroPicture alt="Karina Fernandes" pictureClassName="block size-full" className="absolute inset-0 size-full object-cover object-[46%_6%] land:object-[50%_16%]" />
+      </motion.div>
+      <div className="relative z-10 flex flex-col items-center px-6 pt-[104px] text-center sm:px-10 land:absolute land:inset-y-0 land:left-0 land:w-[54%] land:items-start land:justify-center land:pl-[clamp(2rem,8vw,8rem)] land:pr-6 land:pt-[84px] land:text-left">
+        <motion.p {...rise(0.1)} className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.34em] text-ouro">
+          <span className="h-px w-8 bg-ouro/50 land:w-12" />{brand.role}<span className="h-px w-8 bg-ouro/50 land:hidden" />
+        </motion.p>
+        <h1 className="mt-4 font-display text-[clamp(46px,13vw,68px)] font-bold leading-[1] tracking-[-0.01em] land:mt-6 land:text-[clamp(64px,6.4vw,108px)]">
+          <span className="sr-only">{brand.name} — {brand.role}. </span>
+          <motion.span {...rise(0.25)} className="block text-cafe">Um olhar feito</motion.span>
+          <motion.span {...rise(0.45)} className="-mt-1 block font-script text-[1.25em] font-normal leading-[1.1] tracking-normal text-ouro">sob medida</motion.span>
+        </h1>
+        <motion.p {...rise(0.7)} className="mt-4 max-w-[30ch] text-[15px] leading-snug text-cafe/80 land:mt-6 land:max-w-[36ch] land:text-[18px]">
+          Cílios e sobrancelhas com atendimento individual e hora marcada.
+        </motion.p>
       </div>
     </section>
   )
@@ -297,7 +330,7 @@ export default function Home() {
         </div>
         <div className={`${wrap} relative`}>
           <h2 className="text-center text-[44px] sm:text-6xl"><Lines lines={['Serviços e valores']} /></h2>
-          <ProcedureDeck />
+          <ProcedureList />
           <Extras />
           <Hours />
         </div>

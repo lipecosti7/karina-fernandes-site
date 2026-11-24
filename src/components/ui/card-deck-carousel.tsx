@@ -19,6 +19,8 @@ export type LandPalette = "dawn" | "alpine" | "dusk" | "mist"
 
 export type Slide = {
   image?: string
+  /** Versão maior da foto, mostrada em tela cheia ao clicar no cartão. */
+  full?: string
   title?: string
   caption?: string
   /** Valor mostrado em destaque sobre a foto (texto já formatado). */
@@ -256,14 +258,25 @@ function useSlideImages(slides: Slide[]): string[] {
 const CD_CSS = [
   ".cd-root{position:relative;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(28px,5vh,52px);overflow:hidden;background:var(--cd-bg);color:var(--cd-ink);outline:none;padding:24px 16px;box-sizing:border-box}",
   ".cd-root:focus-visible{box-shadow:inset 0 0 0 2px var(--cd-ink)}",
-  ".cd-deck{position:relative;width:var(--cd-w);aspect-ratio:var(--cd-aspect);max-height:calc(var(--cd-h) * .62);max-width:calc(var(--cd-h) * .62 * var(--cd-ar));touch-action:pan-y}",
+  ".cd-deck{position:relative;width:var(--cd-w);aspect-ratio:var(--cd-aspect);max-height:calc(var(--cd-h) * .66);max-width:calc(var(--cd-h) * .66 * var(--cd-ar));touch-action:pan-y}",
+  ".cd-lb{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:56px 16px 20px;background:rgba(30,20,10,.94);color:#fff;animation:cd-fade .25s ease both}",
+  ".cd-lb img{max-width:100%;max-height:calc(100svh - 150px);object-fit:contain;border-radius:10px;box-shadow:0 30px 80px -20px rgba(0,0,0,.7);user-select:none}",
+  ".cd-lb-cap{text-align:center;font:600 24px/1.1 var(--font-display,system-ui),system-ui,sans-serif}",
+  ".cd-lb-cap small{display:block;margin-top:4px;font:400 14px/1.3 var(--font-sans,system-ui),system-ui,sans-serif;color:rgba(255,255,255,.75)}",
+  ".cd-lb-x,.cd-lb-n{appearance:none;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;cursor:pointer}",
+  ".cd-lb-x{position:absolute;top:12px;right:12px}",
+  ".cd-lb-n{position:absolute;top:50%;margin-top:-22px}",
+  ".cd-lb-n[data-s='p']{left:10px}.cd-lb-n[data-s='n']{right:10px}",
+  "@media (hover:hover){.cd-lb-x:hover,.cd-lb-n:hover{background:rgba(255,255,255,.22)}}",
+  "@keyframes cd-fade{from{opacity:0}to{opacity:1}}",
+  ".cd-card[data-top='1'] img:not(.cd-bg){cursor:zoom-in}",
   ".cd-card{position:absolute;inset:0;border-radius:18px;overflow:hidden;background:#e8dccb;box-shadow:0 1px 2px rgba(0,0,0,.08),0 30px 60px -30px rgba(0,0,0,.45);transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .4s ease,filter .4s ease;will-change:transform}",
   ".cd-card[data-top='1']{cursor:grab}",
   ".cd-card[data-drag='1']{cursor:grabbing;transition:none}",
   ".cd-card[data-fly='1']{transition:transform .45s cubic-bezier(.3,.5,.3,1),opacity .45s ease}",
   ".cd-card[data-snap='1']{transition:none}",
-  ".cd-card img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:contain;display:block;pointer-events:none;user-select:none}",
-  ".cd-card img.cd-bg{object-fit:cover;filter:blur(22px) saturate(1.1);transform:scale(1.2)}",
+  ".cd-card img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;display:block;pointer-events:none;user-select:none}",
+  ".cd-card img.cd-bg{display:none}",
   ".cd-meta{display:flex;align-items:center;gap:clamp(12px,2vw,20px);width:min(100%,460px);transform:translateX(var(--cd-shift,0px))}",
   ".cd-over{position:absolute;inset:auto 0 0 0;padding:64px 18px 18px;color:#fff;background:linear-gradient(to top,rgba(40,26,12,.92),rgba(40,26,12,.6) 62%,transparent);opacity:0;transition:opacity .4s ease;pointer-events:none}",
   ".cd-card[data-top='1'] .cd-over,.cd-card[data-top='1'] .cd-price{opacity:1}",
@@ -308,6 +321,7 @@ export default function CardDeckCarousel({
   const [top, setTop] = React.useState(0)
   const [over, setOver] = React.useState(null as Override | null)
   const [snap, setSnap] = React.useState(null as number | null) // cartão recém-lançado: assenta sem animar
+  const [full, setFull] = React.useState(null as number | null) // índice da foto em tela cheia
   const rootRef = React.useRef(null as HTMLDivElement | null)
   const deckRef = React.useRef(null as HTMLDivElement | null)
   const busy = React.useRef(false)
@@ -407,6 +421,12 @@ export default function CardDeckCarousel({
     const dx = e.clientX - d.x
     const dy = e.clientY - d.y
     const w = deckRef.current?.offsetWidth || 400
+    // toque sem arrastar: abre a foto em tela cheia
+    if (Math.abs(dx) < 8 && Math.abs(dy) < 8 && e.type === "pointerup") {
+      setOver(null)
+      setFull(topRef.current)
+      return
+    }
     if (isThrow(dx, d.vx, w)) {
       if (spread && dx < 0) {
         setOver(null)
@@ -423,6 +443,24 @@ export default function CardDeckCarousel({
   }
 
   const s = slides[top] || {}
+
+  // tela cheia: Esc fecha, setas trocam de foto, a rolagem da página fica travada
+  React.useEffect(() => {
+    if (full === null) return
+    const k = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setFull(null)
+      else if (e.key === "ArrowRight") setFull((f) => (f === null ? f : wrap(f + 1, n)))
+      else if (e.key === "ArrowLeft") setFull((f) => (f === null ? f : wrap(f - 1, n)))
+    }
+    const prev = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    window.addEventListener("keydown", k)
+    return () => {
+      window.removeEventListener("keydown", k)
+      document.body.style.overflow = prev
+    }
+  }, [full, n])
+  const fs = full === null ? null : slides[full]
 
   return (
     <div
@@ -518,6 +556,28 @@ export default function CardDeckCarousel({
       <div className="cd-sr" aria-live="polite">
         {"Cartão " + (top + 1) + " de " + n + (s.title ? ": " + s.title : "") + (s.price ? ", " + s.price : "")}
       </div>
+      {fs && full !== null ? (
+        <div className="cd-lb" role="dialog" aria-modal="true" aria-label={fs.title || "Foto ampliada"} onClick={() => setFull(null)}>
+          <button type="button" className="cd-lb-x" aria-label="Fechar" autoFocus onClick={() => setFull(null)}>
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3 3 10 10M13 3 3 13" stroke="currentColor" strokeWidth="1.5" /></svg>
+          </button>
+          {n > 1 ? (
+            <button type="button" className="cd-lb-n" data-s="p" aria-label="Foto anterior" onClick={(e) => { e.stopPropagation(); setFull(wrap(full - 1, n)) }}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3 5 8l5 5" stroke="currentColor" strokeWidth="1.4" /></svg>
+            </button>
+          ) : null}
+          <img src={fs.full || srcs[full]} alt={fs.alt || fs.title || ""} draggable={false} onClick={(e) => e.stopPropagation()} />
+          <div className="cd-lb-cap" onClick={(e) => e.stopPropagation()}>
+            {fs.title}
+            {fs.price ? <small>{fs.price.replace(/\n/g, " · ")}</small> : null}
+          </div>
+          {n > 1 ? (
+            <button type="button" className="cd-lb-n" data-s="n" aria-label="Próxima foto" onClick={(e) => { e.stopPropagation(); setFull(wrap(full + 1, n)) }}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 3 5 5-5 5" stroke="currentColor" strokeWidth="1.4" /></svg>
+            </button>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   )
 }
