@@ -63,7 +63,7 @@ export const procedures: Procedure[] = [
     description: 'Beleza na medida certa: o design simples realça seu olhar de forma natural, leve e elegante.', detail: 'Perfeito para quem ama discrição sem perder o charme.' },
   { id: 7, name: 'Design com henna', group: 'sobrancelhas', price: 40, photo: '/assets/servico-henna-768.webp', alt: 'Cliente com design de sobrancelhas com henna',
     description: 'A henna proporciona um efeito de maquiagem temporária, tingindo tanto os fios quanto a pele.', detail: 'Garante um olhar mais marcante e definido.' },
-  { id: 8, name: 'Brow', group: 'sobrancelhas', photo: '/assets/servico-brow-768.webp', alt: 'Olho com sobrancelha e cílios alongados',
+  { id: 8, name: 'Brow', group: 'sobrancelhas', price: 90, maintenance: 70, photo: '/assets/servico-brow-768.webp', alt: 'Olho com sobrancelha e cílios alongados',
     description: '' },
 ]
 // serviços avulsos, sem foto no catálogo
