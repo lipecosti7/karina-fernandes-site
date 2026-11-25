@@ -17,8 +17,8 @@ const foto = (slug: string, width: number, height: number): ImageInfo => ({ base
 
 export const images = {
   'karina-retrato': { base: '/karina-retrato', ext: 'jpeg', width: 1200, height: 1600, widths: [480, 720, 1080, 1200] },
-  'karina-pincas': { base: '/karina-pincas', ext: 'jpeg', width: 1200, height: 1600, widths: [720, 1080] },
-  'servico-brasileiro': foto('brasileiro', 660, 660),
+  'karina-pincas': { base: '/karina-pincas', ext: 'jpeg', width: 900, height: 1600, widths: [480, 720, 900] },
+  'servico-brasileiro': foto('brasileiro', 1362, 1600),
   'servico-egipcio': foto('egipcio', 660, 660),
   'servico-luxo': foto('luxo', 1302, 1444),
   'servico-fox-eyes': foto('fox-eyes', 960, 890),

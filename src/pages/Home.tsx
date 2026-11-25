@@ -276,7 +276,7 @@ function About() {
             <Deco name="moldura-arco" fit className="size-full" />
           </span>
           <div className="relative aspect-[4/5] overflow-hidden rounded-t-[999px] rounded-b-[28px] bg-areia">
-            <Img name="karina-pincas" sizes="(min-width: 1024px) 45vw, 90vw" alt={`${brand.name} segurando pinças douradas de extensão de cílios`} className="absolute inset-0 size-full object-cover object-[14%_30%]" />
+            <Img name="karina-pincas" sizes="(min-width: 1024px) 45vw, 90vw" alt={`${brand.name} segurando uma caixa de cílios`} className="absolute inset-0 size-full object-cover object-[50%_55%]" />
           </div>
           <motion.div style={{ rotate: spin }} className="absolute -bottom-7 -left-2 size-28 rounded-full bg-papel p-2 text-ouro sm:-left-6 sm:size-32 lg:-left-8">
             <Seal />
