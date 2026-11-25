@@ -19,7 +19,7 @@ function ServicePhoto({ photo, alt, className }: { photo: string; alt: string; c
   const base = photo.replace(/-768.webp$/, '')
   const ws = photoWidths[base.split('/').pop()!] ?? [480, 768]
   const set = (ext: string) => ws.map((w) => `${base}-${w}.${ext} ${w}w`).join(', ')
-  const sizes = '(min-width: 1024px) 480px, 92vw'
+  const sizes = '(min-width: 1024px) 480px, 100vw'
   return (
     <picture>
       <source type="image/avif" srcSet={set('avif')} sizes={sizes} />
@@ -47,31 +47,30 @@ function ProcedureList() {
   const cur = open === null ? null : procedures[open]
   return (
     <>
-      <ol className="-mx-5 mt-10 flex max-w-[1040px] flex-col gap-1 lg:mx-auto lg:mt-20 lg:gap-24">
+      <ol className="-mx-5 flex max-w-[1040px] flex-col gap-1 lg:mx-auto lg:mt-20 lg:gap-24">
         {procedures.map((p, i) => (
           <motion.li key={p.id} initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-12% 0px' }} transition={{ duration: 0.8, ease }}
             className={`flex flex-col lg:items-center lg:gap-16 ${i % 2 ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}>
             <button type="button" onClick={() => setOpen(i)} aria-label={`Ver foto de ${p.name} em tela cheia`}
               className="group relative block w-full cursor-zoom-in overflow-hidden bg-areia lg:w-[46%] lg:shrink-0 lg:rounded-[22px] lg:shadow-[0_26px_50px_-30px_rgba(61,44,29,0.5)]">
-              <ServicePhoto photo={p.photo} alt={p.alt} className="aspect-[4/5] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+              <ServicePhoto photo={p.photo} alt={p.alt} className="h-svh w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] lg:aspect-[4/5] lg:h-auto" />
               <span aria-hidden className="absolute bottom-3 right-3 hidden size-10 place-items-center rounded-full bg-papel/90 text-cafe lg:grid"><Maximize2 className="size-[18px]" /></span>
-              {/* celular: nome e valor sobre a foto, uma foto por tela */}
-              <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 bg-[linear-gradient(to_top,rgba(43,30,20,0.9),transparent)] px-5 pb-5 pt-20 text-left text-white lg:hidden">
-                <span>
-                  <span className="block text-[13px] italic tracking-[0.1em] text-white/80">0{i + 1}</span>
-                  <span className="block font-display text-[26px] font-semibold leading-[1.1] tracking-[0.02em]">{p.name}</span>
-                  {p.thread ? <span className="mt-1 block text-[12px] text-white/75">{p.thread}</span> : null}
+              {/* celular: uma foto por tela, com só o essencial embaixo */}
+              <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[40%] bg-[linear-gradient(to_top,rgba(20,13,8,0.78),transparent)] lg:hidden" />
+              <span className="absolute inset-x-0 bottom-0 px-7 pb-[3.25rem] text-left text-white lg:hidden">
+                <span className="block text-[10.5px] uppercase tracking-[0.3em] text-white/70">0{i + 1} — {p.group === 'cilios' ? 'Cílios' : 'Sobrancelhas'}</span>
+                <span className="mt-3 flex items-baseline justify-between gap-4">
+                  <span className="font-script text-[40px] font-normal leading-none tracking-normal">{p.name}</span>
+                  <span className="whitespace-nowrap text-[14px] tracking-[0.14em]">{p.price === undefined ? 'sob consulta' : brl(p.price)}</span>
                 </span>
-                <span className="whitespace-pre-line text-right font-display text-[18px] font-semibold leading-[1.25] text-[#e8cfa0]">
-                  {p.price === undefined ? 'Sob consulta' : p.maintenance ? `${brl(p.price)}\nmanut. ${brl(p.maintenance)}` : brl(p.price)}
-                </span>
+                {p.maintenance ? <span className="mt-2 block text-right text-[10.5px] uppercase tracking-[0.25em] text-white/65">manutenção {brl(p.maintenance)}</span> : null}
               </span>
             </button>
             <div className="hidden lg:block lg:flex-1">
               <h3 className="text-[40px] leading-[1.02] sm:text-5xl">{p.name}</h3>
-              <p className="mt-4 flex flex-wrap items-baseline gap-x-5 gap-y-1 border-t border-cafe/15 pt-5 font-display text-[24px] font-semibold text-cafe">
+              <p className="mt-4 flex flex-wrap items-baseline gap-x-5 gap-y-1 border-t border-papel/20 pt-5 font-display text-[24px] font-medium text-papel">
                 {p.maintenance
-                  ? <><span>Aplicação {brl(p.price ?? 0)}</span><span className="text-cinza">Manutenção {brl(p.maintenance)}</span></>
+                  ? <><span>Aplicação {brl(p.price ?? 0)}</span><span className="text-papel/60">Manutenção {brl(p.maintenance)}</span></>
                   : <span>{p.price === undefined ? 'Valor sob consulta' : brl(p.price)}</span>}
               </p>
               <div className="mt-6"><Btn href={waUrl(p.name)}>Agendar<span className="sr-only"> {p.name}</span><WaNote /></Btn></div>
@@ -112,27 +111,21 @@ const useLand = () => useSyncExternalStore(subscribe, () => window.matchMedia(LA
 
 function Hero() {
   const animated = useLand()
-  const rise = (delay: number) => ({ initial: animated ? { opacity: 0, y: 14 } : false, animate: { opacity: 1, y: 0 }, transition: { duration: 0.9, ease, delay } } as const)
+  const rise = (delay: number) => ({ initial: animated ? { opacity: 0, y: 14 } : false, animate: { opacity: 1, y: 0 }, transition: { duration: 1.2, ease, delay } } as const)
   return (
     <>
-    {/* celular: foto em tela cheia (exatamente a altura da tela, sem rolagem) com o texto embaixo sobre um degradê escuro */}
-    <section className="relative h-svh overflow-hidden bg-[#2c1f15] text-papel land:hidden">
-      <motion.div {...(animated ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 1.4, ease } } : {})} className="absolute inset-0">
-        <HeroPicture alt="Karina Fernandes" pictureClassName="block size-full" className="absolute inset-0 size-full object-cover object-[50%_50%]" />
+    {/* celular: foto em tela cheia (altura exata da tela, sem rolagem) e só a assinatura da marca embaixo */}
+    <section className="relative h-svh overflow-hidden bg-[#150d08] text-white land:hidden">
+      <motion.div {...(animated ? { initial: { scale: 1.07 }, animate: { scale: 1 }, transition: { duration: 4, ease } } : {})} className="absolute inset-0">
+        <HeroPicture alt="Karina Fernandes" pictureClassName="block size-full" className="absolute inset-0 size-full object-cover object-[50%_35%]" />
       </motion.div>
-      <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[42%] bg-[linear-gradient(to_top,rgba(61,44,29,0.94),rgba(61,44,29,0.5)_60%,transparent)]" />
-      <div className="absolute inset-x-0 bottom-0 flex flex-col items-center px-6 pb-[max(2.5rem,env(safe-area-inset-bottom))] text-center">
-        <motion.p {...rise(0.1)} className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.34em] text-dourado">
-          <span className="h-px w-8 bg-dourado/60" />{brand.role}<span className="h-px w-8 bg-dourado/60" />
-        </motion.p>
-        <h1 className="mt-4 font-display text-[min(36px,calc((100vw-3rem)/11.6))] font-semibold leading-[1.1] tracking-[0.03em]">
-          <span className="sr-only">{brand.name} — {brand.role}. </span>
-          <motion.span {...rise(0.25)} className="block whitespace-nowrap text-dourado">Um olhar feito</motion.span>
-          <motion.span {...rise(0.45)} className="-mt-1 block font-script text-[clamp(72px,22vw,96px)] font-normal leading-[1] tracking-normal text-papel [text-shadow:0_2px_24px_rgba(43,30,20,0.55)]">sob medida</motion.span>
+      <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-[42%] bg-[linear-gradient(to_top,rgba(20,13,8,0.72),transparent)]" />
+      <div className="absolute inset-x-0 bottom-0 px-6 pb-[max(3.75rem,env(safe-area-inset-bottom))] text-center">
+        <h1>
+          <span className="sr-only">{brand.name} — {brand.role}. Um olhar feito sob medida.</span>
+          <motion.span {...rise(0.2)} className="block font-script text-[clamp(56px,19vw,80px)] font-normal leading-[1] tracking-normal [text-shadow:0_2px_24px_rgba(20,13,8,0.45)]">{brand.name}</motion.span>
         </h1>
-        <motion.p {...rise(0.7)} className="mt-4 max-w-[30ch] text-[15px] leading-snug text-papel/85">
-          Cílios e sobrancelhas com atendimento individual e hora marcada.
-        </motion.p>
+        <motion.p {...rise(0.55)} className="mt-4 text-[10.5px] font-normal uppercase tracking-[0.5em] text-white/85">{brand.role}</motion.p>
       </div>
     </section>
     <HeroDesktop />
@@ -154,7 +147,7 @@ function HeroDesktop() {
           <motion.p {...rise(0.1)} className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.34em] text-ouro">
             <span className="h-px w-12 bg-ouro/50" />{brand.role}
           </motion.p>
-          <h1 className="mt-6 font-display text-[clamp(34px,3.6vw,60px)] font-semibold leading-[1.1] tracking-[0.03em]">
+          <h1 className="mt-6 font-display text-[clamp(56px,5.4vw,92px)] font-medium leading-[1] tracking-[-0.01em]">
             <span className="sr-only">{brand.name} — {brand.role}. </span>
             <motion.span {...rise(0.25)} className="block whitespace-nowrap text-ouro">Um olhar feito</motion.span>
             <motion.span {...rise(0.45)} className="-mt-1 block font-script text-[clamp(88px,9.4vw,168px)] font-normal leading-[1] tracking-normal text-cafe">sob medida</motion.span>
@@ -236,66 +229,35 @@ function Differential({ icon, title, text }: { icon: string; title: string; text
 
 function BookingPolicy() {
   return (
-    <section className="px-5 pt-20 text-center lg:px-12 lg:pt-32">
+    <section className="px-6 py-24 text-center lg:px-12 lg:py-36">
       <div className={`${wrap} flex flex-col items-center`}>
-        <h2 className="text-[40px] sm:text-6xl"><Lines lines={['Antes de agendar']} /></h2>
-        <p className="mt-5 max-w-md text-cinza">Atendimento de 2 a 3 horas. Confira as restrições antes de marcar.</p>
-        <Link to="/informacoes" className="group mt-8 inline-flex items-center gap-3 text-[15px] font-medium text-cafe">
-          <span className="border-b border-cafe pb-1">Ver informações completas</span>
-          <ArrowUpRight aria-hidden strokeWidth={1.6} className="size-5 transition-transform duration-300 group-hover:rotate-45" />
-        </Link>
+        <h2><span className="font-sans text-[10.5px] font-normal uppercase tracking-[0.42em] text-ouro">Antes de agendar</span></h2>
+        <motion.p initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.9, ease }}
+          className="mt-5 font-script text-[clamp(56px,17vw,84px)] leading-none text-ouro">2 a 3 horas</motion.p>
+        <p className="mt-5 max-w-[30ch] text-[15px] font-light leading-relaxed text-cinza">Venha sem pressa. Confira as restrições antes de marcar.</p>
+        <Link to="/informacoes" className="mt-8 inline-block rounded-full border border-cafe/60 px-7 py-3.5 text-[11px] font-medium uppercase tracking-[0.28em] text-cafe transition-colors hover:bg-cafe hover:text-papel">Informações completas</Link>
       </div>
     </section>
   )
 }
 
-// selo giratório da marca: texto em círculo (a fonte vem do site, por isso é um SVG inline e não uma máscara)
-function Seal() {
-  return (
-    <svg viewBox="0 0 160 160" aria-hidden className="size-full">
-      <defs><path id="selo-circulo" d="M80 80m-56 0a56 56 0 1 1 112 0a56 56 0 1 1-112 0" /></defs>
-      <circle cx="80" cy="80" r="74" fill="none" stroke="currentColor" strokeWidth="0.8" />
-      <text fill="currentColor" fontSize="13.5" letterSpacing="3.2" className="font-sans" style={{ textTransform: 'uppercase' }}>
-        <textPath href="#selo-circulo">Karina Fernandes · Lash Designer · </textPath>
-      </text>
-      <text x="80" y="92" textAnchor="middle" fill="currentColor" fontSize="40" className="font-display">KF</text>
-    </svg>
-  )
-}
-
+// "Seu olhar, com mais cuidado.": foto aquecida (tira o esverdeado da parede) e o texto em fundo creme liso, sem degradê
 function About() {
-  const ref = useRef<HTMLElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
-  const spin = useTransform(scrollYProgress, [0, 1], [0, 300]) // o selo gira conforme a rolagem
   return (
-    <section ref={ref} id="sobre" className="scroll-mt-20 overflow-hidden px-5 py-20 lg:px-12 lg:py-32">
-      <div className={`${wrap} grid items-center gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-24`}>
-        {/* retrato em arco, com a moldura em linha fina deslocada e o selo da marca girando com a rolagem */}
-        <div className="relative mx-auto w-full max-w-md lg:max-w-none">
-          <span aria-hidden className="pointer-events-none absolute -inset-x-3 -bottom-3 -top-3 translate-x-3 translate-y-3 text-dourado lg:translate-x-4">
-            <Deco name="moldura-arco" fit className="size-full" />
-          </span>
-          <div className="relative aspect-[4/5] overflow-hidden rounded-t-[999px] rounded-b-[28px] bg-areia">
-            <Img name="karina-pincas" sizes="(min-width: 1024px) 45vw, 90vw" alt={`${brand.name} segurando uma caixa de cílios`} className="absolute inset-0 size-full object-cover object-[50%_55%]" />
-          </div>
-          <motion.div style={{ rotate: spin }} className="absolute -bottom-7 -left-2 size-28 rounded-full bg-papel p-2 text-ouro sm:-left-6 sm:size-32 lg:-left-8">
-            <Seal />
-          </motion.div>
-        </div>
-        <div>
-          <div className="flex items-start gap-3">
-            <h2 className="text-[44px] sm:text-6xl"><Lines lines={['Seu olhar,', 'com mais cuidado.']} /></h2>
-            <motion.span initial={{ opacity: 0, rotate: -90, scale: 0.4 }} whileInView={{ opacity: 1, rotate: 0, scale: 1 }} viewport={{ once: true }} transition={{ duration: 1, ease, delay: 0.6 }} className="mt-1 text-dourado">
-              <Deco name="estrela-brilho" className="block size-7 sm:size-9" />
-            </motion.span>
-          </div>
-          <Ornament className="mt-5 w-40 text-dourado lg:w-52" />
-          <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.8, ease, delay: 0.2 }}>
-            <p className="mt-6 max-w-md text-lg leading-relaxed text-cafe">Sou a Karina, lash designer. Escolho com você a técnica que combina com o seu olhar.</p>
-            <div className="mt-8"><Btn to="/#procedimentos">Ver serviços e valores</Btn></div>
-          </motion.div>
-          <Location />
-        </div>
+    <section id="sobre" className="scroll-mt-20 bg-papel lg:grid lg:min-h-[max(100svh,720px)] lg:grid-cols-2">
+      <div className="relative h-[66svh] overflow-hidden bg-areia lg:h-auto">
+        <Img name="karina-pincas" sizes="(min-width: 1024px) 50vw, 100vw" alt={`${brand.name} segurando uma caixa de cílios`}
+          className="absolute inset-0 size-full object-cover object-[50%_42%] [filter:sepia(0.28)_saturate(0.9)_hue-rotate(-14deg)_brightness(1.02)_contrast(1.02)]" />
+      </div>
+      <div className="px-7 py-10 lg:flex lg:flex-col lg:justify-center lg:px-[clamp(2rem,6vw,6rem)] lg:py-20">
+        <p className="text-[10.5px] uppercase tracking-[0.42em] text-ouro">Sobre</p>
+        <h2 className="mt-3">
+          <span className="block font-script text-[clamp(46px,14vw,58px)] font-normal leading-[1.05] text-ouro lg:text-[clamp(64px,6vw,100px)]">Seu olhar,</span>
+          <span className="block font-script text-[clamp(46px,14vw,58px)] font-normal leading-[1.05] text-ouro lg:text-[clamp(64px,6vw,100px)]">com mais cuidado.</span>
+        </h2>
+        <p className="mt-4 max-w-[34ch] text-[14.5px] font-light leading-relaxed text-cinza lg:text-[17px]">Sou a Karina, lash designer. Escolho com você a técnica que combina com o seu olhar.</p>
+        <div className="mt-6"><Link to="/#procedimentos" className="inline-block rounded-full border border-cafe/60 px-7 py-3.5 text-[11px] font-medium uppercase tracking-[0.28em] text-cafe transition-colors hover:bg-cafe hover:text-papel">Ver serviços e valores</Link></div>
+        <Location />
       </div>
     </section>
   )
@@ -324,11 +286,11 @@ function Step({ i, title, text, progress }: { i: number; title: string; text: st
   const fade = useTransform(on, [0, 1], [0.75, 1])
   return (
     <li className="relative">
-      <motion.span style={{ backgroundColor: dot }} aria-hidden className="absolute -left-10 top-1.5 size-[15px] rounded-full border-2 border-white lg:-top-12 lg:left-0" />
+      <motion.span style={{ backgroundColor: dot }} aria-hidden className="absolute -left-10 top-1.5 size-[11px] rounded-full border border-white lg:-top-12 lg:left-0" />
       <motion.div style={{ opacity: fade }}>
-        <span className="text-xs font-medium uppercase tracking-[0.22em] text-white/80">Etapa {i + 1}</span>
-        <h3 className="mt-2 text-[26px] font-semibold tracking-tight">{title}</h3>
-        <p className="mt-3 max-w-[32ch] text-[15px] leading-relaxed text-white/90">{text}</p>
+        <span className="text-[10px] font-normal uppercase tracking-[0.3em] text-white/70">Etapa 0{i + 1}</span>
+        <h3 className="mt-1 font-display text-[26px] font-medium leading-tight tracking-normal">{title}</h3>
+        <p className="mt-1 max-w-[32ch] text-[14px] font-light leading-relaxed text-white/85">{text}</p>
       </motion.div>
     </li>
   )
@@ -341,10 +303,13 @@ function HowItWorks() {
   return (
     <section className="bg-ouro px-5 py-20 text-white lg:px-12 lg:py-32">
       <div className={wrap}>
-        <h2 className="max-w-2xl text-[44px] sm:text-6xl"><Lines lines={['Do primeiro contato', 'ao olhar dos sonhos.']} /></h2>
-        <ol ref={ref} className="relative mt-16 grid gap-12 pl-10 lg:mt-20 lg:grid-cols-4 lg:gap-10 lg:pl-0 lg:pt-12">
-          <span aria-hidden className="absolute bottom-0 left-[6px] top-2 w-[3px] rounded-full bg-white/30 lg:inset-x-0 lg:bottom-auto lg:top-[6px] lg:h-[3px] lg:w-auto" />
-          <motion.span aria-hidden style={{ scaleY: progress }} className="absolute bottom-0 left-[6px] top-2 w-[3px] origin-top rounded-full bg-papel lg:hidden" />
+        <h2 className="text-center">
+          <span className="block font-script text-[clamp(44px,13vw,64px)] font-normal leading-[1.05] lg:text-[80px]">Do primeiro contato</span>
+          <span className="block font-script text-[clamp(44px,13vw,64px)] font-normal leading-[1.05] lg:text-[80px]">ao olhar dos sonhos</span>
+        </h2>
+        <ol ref={ref} className="relative mt-14 grid gap-9 pl-10 lg:mt-20 lg:grid-cols-4 lg:gap-10 lg:pl-0 lg:pt-12">
+          <span aria-hidden className="absolute bottom-0 left-[5px] top-2 w-px rounded-full bg-white/40 lg:inset-x-0 lg:bottom-auto lg:top-[6px] lg:h-[3px] lg:w-auto" />
+          <motion.span aria-hidden style={{ scaleY: progress }} className="absolute bottom-0 left-[5px] top-2 w-px origin-top rounded-full bg-papel lg:hidden" />
           <motion.span aria-hidden style={{ scaleX: progress }} className="absolute inset-x-0 top-[6px] hidden h-[3px] origin-left rounded-full bg-papel lg:block" />
           {steps.map((s, i) => <Step key={s.title} i={i} title={s.title} text={s.text} progress={progress} />)}
         </ol>
@@ -353,16 +318,16 @@ function HowItWorks() {
   )
 }
 
-// serviços avulsos (sem foto): lista editorial com valor à direita
+// serviços avulsos (sem foto): duas colunas separadas por um filete, valor em destaque
 function Extras() {
   return (
-    <div className="mx-auto mt-16 max-w-xl rounded-[28px] bg-cafe px-5 py-9 sm:px-9 lg:mt-24">
-      <p className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-dourado">Outros serviços</p>
-      <ul className="mt-6 flex flex-col gap-3.5">
-        {extras.map((e) => (
-          <li key={e.name} className="flex items-center justify-between gap-4 rounded-full border border-dourado/50 px-6 py-4 sm:px-8">
-            <span className="font-display text-[19px] leading-none tracking-[0.02em] text-papel sm:text-[22px]">{e.name}</span>
-            <span className="font-display text-[19px] leading-none text-dourado sm:text-[22px]">{brl(e.price)}</span>
+    <div className="mx-auto max-w-xl text-center">
+      <p className="text-[10.5px] font-normal uppercase tracking-[0.42em] text-ouro">Outros serviços</p>
+      <ul className="mt-8 grid grid-cols-1 sm:grid-cols-2">
+        {extras.map((e, i) => (
+          <li key={e.name} className={`px-6 py-8 ${i ? 'border-t border-cafe/15 sm:border-l sm:border-t-0' : ''}`}>
+            <span className="block text-[10px] font-normal uppercase tracking-[0.3em] text-cinza">{e.name}</span>
+            <span className="mt-3 block font-numeral text-[48px] leading-none text-cafe">{brl(e.price)}</span>
           </li>
         ))}
       </ul>
@@ -378,21 +343,20 @@ export default function Home() {
       <Differentials />
       <About />
 
-      {/* Serviços: seção simples; só as ondas de troca de seção como ornamento */}
-      <section id="procedimentos" className="relative scroll-mt-20 bg-creme px-5 pb-28 pt-28 lg:px-12 lg:pb-44 lg:pt-44">
-        {/* ondas de troca de seção: entram e saem do papel; proporção fixa 1440x120, ampliada e centralizada no celular */}
-        <div aria-hidden className="absolute inset-x-0 -top-px flex overflow-hidden text-papel">
-          <Deco name="onda-secao" className="block aspect-[1440/120] w-[220%] -translate-x-[27%] -scale-y-100 sm:w-[calc(100%+4px)] sm:-translate-x-0.5" />
+      {/* Serviços: fundo escuro contínuo com as fotos; o que é texto vem logo depois, em fundo claro */}
+      <section id="procedimentos" className="scroll-mt-20 bg-[#150d08] pt-20 text-papel lg:pt-28">
+        <div className="px-6 pb-14 text-center lg:pb-20">
+          <h2>
+            <span className="block font-sans text-[10.5px] font-normal uppercase tracking-[0.42em] text-dourado">Serviços e valores</span>
+            <span className="mt-4 block font-script text-[clamp(52px,15vw,84px)] font-normal leading-[1.05]">Escolha o seu olhar</span>
+          </h2>
         </div>
-        <div aria-hidden className="absolute inset-x-0 -bottom-px flex overflow-hidden text-papel">
-          <Deco name="onda-secao" className="block aspect-[1440/120] w-[220%] -translate-x-[27%] sm:w-[calc(100%+4px)] sm:-translate-x-0.5" />
-        </div>
-        <div className={`${wrap} relative`}>
-          <h2 className="text-center text-[44px] sm:text-6xl"><Lines lines={['Serviços e valores']} /></h2>
-          <ProcedureList />
-          <Extras />
-          <Hours />
-        </div>
+        <div className="px-5 lg:px-12"><ProcedureList /></div>
+      </section>
+
+      <section className="bg-papel px-6 py-20 lg:px-12 lg:py-28">
+        <Extras />
+        <Hours />
       </section>
 
       <ScrollMarquee words={['Brasileiro', 'Egípcio', 'Luxo', 'Fox Eyes', 'Glamour']} />
@@ -401,12 +365,12 @@ export default function Home() {
 
       <BookingPolicy />
 
-      <section id="faq" className="scroll-mt-20 px-5 py-20 lg:px-12 lg:py-28">
-        <div className={`${wrap} grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20`}>
+      <section id="faq" className="scroll-mt-20 bg-[#1d130c] px-6 py-20 text-papel lg:px-12 lg:py-28">
+        <div className={`${wrap} grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20`}>
           <div>
-            <h2 className="text-[44px] sm:text-6xl"><Lines lines={['Perguntas', 'frequentes']} /></h2>
-            <p className="mt-5 max-w-sm text-cinza">Ficou com dúvida? Chame no WhatsApp.</p>
-            <div className="mt-6"><Btn variant="outline" href={waUrl(undefined, 'duvida')}>Tirar dúvida no WhatsApp<WaNote /></Btn></div>
+            <h2 className="font-display text-[48px] font-light leading-none lg:text-[64px]">Dúvidas?</h2>
+            <p className="mt-3 text-[15px] font-light text-papel/70">Chame no WhatsApp.</p>
+            <div className="mt-6"><a href={waUrl(undefined, 'duvida')} target="_blank" rel="noopener noreferrer" className="inline-block rounded-full border border-papel/50 px-7 py-3.5 text-[11px] font-medium uppercase tracking-[0.28em] text-papel transition-colors hover:bg-papel hover:text-cafe">Tirar dúvida<WaNote /></a></div>
           </div>
           <Faq />
         </div>
