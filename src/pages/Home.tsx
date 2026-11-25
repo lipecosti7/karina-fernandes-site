@@ -125,7 +125,7 @@ function Hero() {
           <span className="sr-only">{brand.name} — {brand.role}. Um olhar feito sob medida.</span>
           <motion.span {...rise(0.2)} className="block font-script text-[clamp(56px,19vw,80px)] font-normal leading-[1] tracking-normal [text-shadow:0_2px_24px_rgba(20,13,8,0.45)]">{brand.name}</motion.span>
         </h1>
-        <motion.p {...rise(0.55)} className="mt-4 text-[10.5px] font-normal uppercase tracking-[0.5em] text-white/85">{brand.role}</motion.p>
+        <motion.p {...rise(0.55)} className="mt-4 text-[10.5px] font-normal uppercase tracking-[0.5em] text-white/85">Beauty</motion.p>
       </div>
     </section>
     <HeroDesktop />
@@ -145,7 +145,7 @@ function HeroDesktop() {
       <div className="relative flex flex-1 flex-col">
         <div className="absolute inset-y-0 left-0 z-10 flex w-[52%] flex-col items-start justify-center pl-[clamp(2rem,8.2vw,8rem)] pr-6 text-left">
           <motion.p {...rise(0.1)} className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.34em] text-ouro">
-            <span className="h-px w-12 bg-ouro/50" />{brand.role}
+            <span className="h-px w-12 bg-ouro/50" />Beauty
           </motion.p>
           <h1 className="mt-6 font-display text-[clamp(56px,5.4vw,92px)] font-medium leading-[1] tracking-[-0.01em]">
             <span className="sr-only">{brand.name} — {brand.role}. </span>
